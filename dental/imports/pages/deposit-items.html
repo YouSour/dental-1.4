@@ -1,0 +1,96 @@
+<!--Item Temporary-->
+<template name="Dental_depositItems">
+    <!--Item form-->
+    <!--{{> Dental_depositItemsNew}}-->
+    <!--<hr>-->
+
+    <!--Items list-->
+    {{> reactiveTable settings=tableSettings}}
+
+
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="pull-right">Total:</div>
+        </div>
+        <div class="col-sm-4">
+            {{> afQuickField name="total" value=total label=false readonly="true"}}
+        </div>
+    </div>
+</template>
+
+<!--Action-->
+<template name="Dental_depositItemsAction">
+    <ul class="list-inline">
+        <li><a href="#" class="js-update-item"><i class="fa fa-pencil"></i></a></li>
+        <li><a href="#" class="js-destroy-item"><i class="fa fa-remove"></i></a></li>
+    </ul>
+</template>
+
+<!--New Item-->
+<template name="Dental_depositItemsNew">
+    {{#autoForm schema=schema id="Dental_depositItemsNew"}}
+        <div class="row">
+            <div class="col-sm-2">
+                {{> afQuickField name="itemId" label=false placeholder="Item"}}
+            </div>
+            <div class="col-sm-2">
+                {{> afQuickField name="amount" value=amount label=false placeholder="Amount" readonly=true}}
+            </div>
+            <div class="col-sm-2">
+                {{> afQuickField name="laboAmount" label=false placeholder="Labo Amount"}}
+            </div>
+            <div class="col-sm-2">
+                {{> afQuickField name="doctorAmount" label=false placeholder="Doctor Amount"}}
+            </div>
+            <div class="col-sm-2">
+                {{> afQuickField name="paidAmount" label=false placeholder="Paid Amount"}}
+            </div>
+            <div class="col-sm-1">
+                {{> afQuickField name="balance" value=amount label=false placeholder="Balance" readonly=true}}
+            </div>
+            <div class="col-sm-1">
+                <button type="button" class="btn btn-primary pull-right js-add-item" {{disabledAddItemBtn}}>+</button>
+            </div>
+        </div>
+        <div class="row">
+
+        </div>
+    {{/autoForm}}
+</template>
+
+<!--Edit Item-->
+<template name="Dental_depositItemsEdit">
+    <div class="box-body">
+        {{#autoForm schema=schema id="Dental_depositItemsEdit" doc=data}}
+            <div class="row">
+                <div class="col-md-12">
+                    {{> afQuickField name="itemId"}}
+                    {{> afQuickField name="date"}}
+                    {{> afQuickField name="qty"}}
+                    {{> afQuickField name="price" value=price}}
+                    {{> afQuickField name="discount"}}
+                    {{> afQuickField name="amount" value=amount readonly="true"}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    {{> afQuickField name="labo"}}
+                </div>
+                <div class="col-md-3">
+                    {{> afQuickField name="laboAmount"}}
+                </div>
+                <div class="col-md-3">
+                    {{> afQuickField name="doctor"}}
+                </div>
+                <div class="col-md-3">
+                    {{> afQuickField name="doctorAmount"}}
+                </div>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn-submit btn btn-primary"><i class="fa fa-paper-plane-o"></i> {{_ "form.btnSubmit"}}
+                </button>
+                <button type="reset" class="btn btn-default"><i class="fa fa-refresh"></i> {{_ "form.btnReset"}}</button>
+            </div>
+        {{/autoForm}}
+    </div>
+</template>

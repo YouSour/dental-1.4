@@ -1,0 +1,107 @@
+<template name="Dental_sidebarMenu">
+    <li class="{{isActiveRoute name='dental.home'}}">
+        <a href="{{pathFor 'dental.home'}}">
+            <i class="fa fa-home"></i> <span>{{_ "dental.sidebarMenu.home"}}</span>
+        </a>
+    </li>
+
+    <!--Data-->
+    {{#if isInRole 'data-insert,data-update,data-remove' 'Dental'}}
+        <li class="header"><i class="fa fa-database"></i> DATA</li>
+        <li class="{{isActiveRoute name='dental.patient'}}">
+            <a href="{{pathFor 'dental.patient'}}">
+                <i class="fa fa-circle-o"></i> <span>{{_ "dental.sidebarMenu.patient"}}</span>
+            </a>
+        </li>
+        <li class="{{isActiveRoute name='dental.order'}}">
+            <a href="{{pathFor 'dental.order'}}">
+                <i class="fa fa-circle-o"></i> <span>{{_ "dental.sidebarMenu.order"}}</span>
+            </a>
+        </li>
+        <li class="{{isActiveRoute name='dental.register'}}">
+            <a href="{{pathFor 'dental.register'}}">
+                <i class="fa fa-circle-o"></i> <span>{{_ "dental.sidebarMenu.register"}}</span>
+            </a>
+        </li>
+    {{/if}}
+
+    <!--Report-->
+    {{#if isInRole 'reporter' 'Dental'}}
+        <li class="header"><i class="fa fa-file-text-o"></i> REPORT</li>
+        <li class="{{isActiveRoute name='dental.invoiceReport'}}">
+            <a href="{{pathFor 'dental.invoiceReport'}}">
+                <i class="fa fa-file-o"></i> <span>Invoice</span>
+            </a>
+        </li>
+        <li class="{{isActiveRoute name='dental.orderReport'}}">
+            <a href="{{pathFor 'dental.orderReport'}}">
+                <i class="fa fa-file-o"></i> <span>Order</span>
+            </a>
+        </li>
+    {{/if}}
+
+    <!--Settings-->
+    {{#if isInRole 'setting' 'Dental'}}
+        <li class="header"><i class="fa fa-cogs"></i> SETTING</li>
+        <li class="{{isActiveRoute name='dental.staff'}}">
+            <a href="{{pathFor 'dental.staff'}}">
+                <i class="fa fa-cog"></i> <span>{{_ "dental.sidebarMenu.staff"}}</span>
+            </a>
+        </li>
+        <li class="{{isActiveRoute name='dental.doctor'}}">
+            <a href="{{pathFor 'dental.doctor'}}">
+                <i class="fa fa-cog"></i> <span>{{_ "dental.sidebarMenu.doctor"}}</span>
+            </a>
+        </li>
+        <li class="{{isActiveRoute name='dental.caseHistory'}}">
+            <a href="{{pathFor 'dental.caseHistory'}}">
+                <i class="fa fa-cog"></i> <span>{{_ "dental.sidebarMenu.caseHistory"}}</span>
+            </a>
+        </li>
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-cog"></i> <span>Disease</span>
+                <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+            </a>
+            <ul class="treeview-menu" style="display: none;">
+                <li class="{{isActiveRoute name='dental.diseaseCategories'}}">
+                    <a href="{{pathFor 'dental.diseaseCategories'}}"><i class="fa fa-circle-o"></i> {{_ "dental.sidebarMenu.diseaseCategories"}}</a>
+                </li>
+
+                <li class="{{isActiveRoute name='dental.diseaseItems'}}">
+                    <a href="{{pathFor 'dental.diseaseItems'}}"><i class="fa fa-circle-o"></i> {{_ "dental.sidebarMenu.diseaseItems"}}</a>
+                </li>
+            </ul>
+        </li>
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-cog"></i> <span>Laboratory</span>
+                <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+            </a>
+            <ul class="treeview-menu" style="display: none;">
+                <li class="{{isActiveRoute name='dental.laboratoryItems'}}">
+                    <a href="{{pathFor 'dental.laboratoryItems'}}"><i class="fa fa-circle-o"></i> {{_ "dental.sidebarMenu.laboratoryItems"}}</a>
+                </li>
+            </ul>
+        </li>
+        <li class="{{isActiveRoute name='core.exchange'}}">
+            <a href="{{pathFor 'core.exchange'}}">
+                <i class="fa fa-cog"></i> <span>{{_ "core.sidebarMenu.exchange"}}</span>
+            </a>
+        </li>
+        <li class="{{isActiveRoute name='dental.item'}}">
+            <a href="{{pathFor 'dental.item'}}">
+                <i class="fa fa-cog"></i> <span>{{_ "dental.sidebarMenu.item"}}</span>
+            </a>
+        </li>
+        <li class="{{isActiveRoute name='dental.lookupValue'}}">
+            <a href="{{pathFor 'dental.lookupValue'}}">
+                <i class="fa fa-cog"></i> <span>Lookup Value</span>
+            </a>
+        </li>
+    {{/if}}
+</template>

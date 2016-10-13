@@ -1,0 +1,161 @@
+<!--Index-->
+<template name="Dental_register">
+    <div class="box-header with-border">
+        <h3 class="box-title">
+            {{> addNewButton}}
+        </h3>
+    </div>
+    <!-- /.box-header -->
+
+    <div class="box-body">
+        <!--Tabular-->
+        {{> tabular table=tabularTable selector=selector class="table table-striped table-bordered table-condensed"}}
+    </div>
+    <!-- /.box-body -->
+</template>
+
+<!--Action-->
+<template name="Dental_registerAction">
+    {{#columnAction}}
+        <li><a href="#" class="js-update"><i class="fa fa-pencil"></i> {{_ "action.edit"}}</a></li>
+        <li><a href="#" class="js-destroy"><i class="fa fa-remove"></i> {{_ "action.delete"}}</a></li>
+        <li><a href="#" class="js-display"><i class="fa fa-eye"></i> {{_ "action.show"}}</a></li>
+        <li role="separator" class="divider"></li>
+        <li><a href="#" class="js-invoice"><i class="fa fa-print"></i> {{_ "dental.register.registerInvoiceAction"}}</a></li>
+    {{/columnAction}}
+</template>
+
+<!--Deposit-Link-Action-->
+<template name="Dental_depositAndPaymentLinkAction">
+    <button type="button" class="btn btn-social btn-sm btn-warning js-deposit">
+        <i class="fa fa-star-half-o"></i> Deposit
+    </button>
+    <button type="button" class="btn btn-social btn-sm btn-info js-payment">
+        <i class="fa fa-star"></i> Payment
+    </button>
+</template>
+
+<!--Form-->
+<template name="Dental_registerForm">
+    <div class="box-body">
+        {{#if isLoading}}
+            {{> loading}}
+        {{else}}
+            {{#autoForm collection=collection id="Dental_registerForm" doc=data.doc type=data.formType
+            resetOnSuccess=false}}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Register</div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{> afQuickField name="registerDate"}}
+
+                                        <div class="form-group{{#if afFieldIsInvalid name='patientId'}} has-error{{/if}}"
+                                             data-required="true">
+                                            <label class="control-label" for="patientId">
+                                                Patient
+                                            </label>
+                                            <b>| Member :</b>
+
+                                            <i class="fa fa-star-o text-{{checkMember.class}}" id="animation"></i>
+                                            <span class="text-{{checkMember.class}}">
+                                                {{checkMember.text}}
+                                            </span>
+
+                                                {{> afFieldInput name='patientId'}}
+
+                                            {{#if afFieldIsInvalid name='patientId'}}
+                                                <span class="help-block">{{afFieldMessage name='patientId'}}</span>
+                                            {{/if}}
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{> afQuickField name="des"}}
+                                        {{> afQuickField type="hidden" name="branchId" value=currentBranch}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <!--Item Temporary-->
+                        {{> Dental_registerItems registerItemsCollection=registerItemsCollection}}
+
+                        <div class="row">
+                            <div class="col-sm-12 pull-right">
+                                <!--{{> formFooterWithButton}}-->
+
+                                {{#formFooter}}
+                                    <button type="submit" class="btn btn-primary" {{disabledSubmitBtn}}>
+                                        <i class="fa fa-floppy-o"></i> {{_ "form.btnSave"}}
+                                    </button>
+                                    <button type="reset" class="btn btn-default">
+                                        <i class="fa fa-refresh"></i> {{_ "form.btnReset"}}
+                                    </button>
+                                {{/formFooter}}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            {{/autoForm}}
+        {{/if}}
+    </div>
+</template>
+
+<!--Status-Link-Action-->
+<template name="Dental_statusLinkAction">
+    <button type="button" class="btn btn-{{status.btnColor}} btn-sm btn-social js-status">{{{status.icon}}}</button>
+</template>
+
+<!--dental-registerStatus-->
+<template name="Dental_registerClosedDate">
+    <div class="box-body">
+            {{#autoForm collection=collection id="Dental_registerClosedDate"  doc=data.doc type=data.formType
+            resetOnSuccess=false}}
+                <div class="row">
+
+                    <div class="col-md-12">
+                        {{> afQuickField name="closedDate"}}
+                    </div>
+
+                </div>
+                {{> formFooterWithButton}}
+
+            {{/autoForm}}
+    </div>
+</template>
+
+<!--Show-->
+<template name="Dental_registerShow">
+    <div class="box-body">
+        {{#if isLoading}}
+            {{> loading}}
+        {{else}}
+            {{#with data}}
+                <dl class="dl-horizontal">
+                    <dt>ID</dt>
+                    <dd>{{_id}}</dd>
+                    <dt>Register Date</dt>
+                    <dd>{{moFormat registerDate "DD/MM/YYYY"}}</dd>
+                    <dt>Patient</dt>
+                    <dd>{{patientId}} : {{patientDoc.name}}</dd>
+                    <dt>Description</dt>
+                    <dd>{{{des}}}</dd>
+                    <dt>Total</dt>
+                    <dd>{{numFormat total "0,0.00"}}</dd>
+                    <dt>Items</dt>
+                    <dd>
+                        <!--jsonview-->
+                        {{> jsonView json=items options=jsonViewOpts}}
+                    </dd>
+                </dl>
+            {{/with}}
+        {{/if}}
+    </div>
+</template>

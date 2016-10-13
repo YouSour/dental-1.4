@@ -1,0 +1,107 @@
+<!--Item Temporary-->
+<template name="Dental_registerItems">
+    <!--Item form-->
+    {{> Dental_registerItemsNew}}
+    <!--<hr>-->
+
+    <!--Items list-->
+    {{> reactiveTable settings=tableSettings}}
+
+
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="pull-right">Total:</div>
+        </div>
+        <div class="col-sm-4">
+            {{> afQuickField name="total" value=total label=false readonly="true"}}
+        </div>
+    </div>
+</template>
+
+<!--Action-->
+<template name="Dental_registerItemsAction">
+    <ul class="list-inline">
+        <li><a href="#" class="js-update-item"><i class="fa fa-pencil"></i></a></li>
+        <li><a href="#" class="js-destroy-item"><i class="fa fa-remove"></i></a></li>
+    </ul>
+</template>
+
+<!--New Item-->
+<template name="Dental_registerItemsNew">
+    {{#autoForm schema=schema id="Dental_registerItemsNew"}}
+        <div class="row">
+            <div class="col-sm-3">
+                {{> afQuickField name="itemId" label=false placeholder="Item"}}
+            </div>
+            <div class="col-sm-2">
+                {{> afQuickField name="date" label=false placeholder="Date" class='date'}}
+            </div>
+            <div class="col-sm-1">
+                {{> afQuickField name="qty" label=false placeholder="Qty"}}
+            </div>
+            <div class="col-sm-1">
+                {{> afQuickField name="price" value=price label=false placeholder="Price"}}
+            </div>
+            <div class="col-sm-2">
+                {{> afQuickField name="discount" label=false placeholder="Discount (%)" class='discount'}}
+            </div>
+            <div class="col-sm-2">
+                {{> afQuickField name="amount" value=amount label=false placeholder="Amount" readonly=true}}
+            </div>
+            <div class="col-sm-1">
+                <button type="button" class="btn btn-primary pull-right js-add-item" {{disabledAddItemBtn}}>+</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                {{> afQuickField name="labo" label=false placeholder="Labo"}}
+            </div>
+            <div class="col-sm-3">
+                {{> afQuickField name="laboAmount" label=false placeholder="Labo Amount"}}
+            </div>
+            <div class="col-sm-3">
+                {{> afQuickField name="doctor" label=false placeholder="Doctor"}}
+            </div>
+            <div class="col-sm-3">
+                {{> afQuickField name="doctorAmount" label=false placeholder="Doctor Amount"}}
+            </div>
+        </div>
+    {{/autoForm}}
+</template>
+
+<!--Edit Item-->
+<template name="Dental_registerItemsEdit">
+    <div class="box-body">
+        {{#autoForm schema=schema id="Dental_registerItemsEdit" doc=data}}
+            <div class="row">
+                <div class="col-md-12">
+                    {{> afQuickField name="itemId"}}
+                    {{> afQuickField name="date"}}
+                    {{> afQuickField name="qty"}}
+                    {{> afQuickField name="price" value=price}}
+                    {{> afQuickField name="discount"}}
+                    {{> afQuickField name="amount" value=amount readonly="true"}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    {{> afQuickField name="labo"}}
+                </div>
+                <div class="col-md-3">
+                    {{> afQuickField name="laboAmount"}}
+                </div>
+                <div class="col-md-3">
+                    {{> afQuickField name="doctor"}}
+                </div>
+                <div class="col-md-3">
+                    {{> afQuickField name="doctorAmount"}}
+                </div>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn-submit btn btn-primary"><i class="fa fa-paper-plane-o"></i> {{_ "form.btnSubmit"}}
+                </button>
+                <button type="reset" class="btn btn-default"><i class="fa fa-refresh"></i> {{_ "form.btnReset"}}</button>
+            </div>
+        {{/autoForm}}
+    </div>
+</template>
