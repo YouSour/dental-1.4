@@ -8,10 +8,10 @@ import {moment} from 'meteor/momentjs:moment';
 import {__} from '../../../core/common/libs/tapi18n-callback-helper.js';
 import {SelectOpts} from '../../imports/libs/select-opts.js';
 
-export const Deposit = new Mongo.Collection("dental_deposit");
+export const Payment = new Mongo.Collection("dental_payment");
 
 // Items sub schema
-Deposit.itemsSchema = new SimpleSchema({
+Payment.itemsSchema = new SimpleSchema({
     itemId: {
         type: String,
         label: 'Item'
@@ -86,8 +86,8 @@ Deposit.itemsSchema = new SimpleSchema({
     },
 });
 
-// Deposit schema
-Deposit.schema = new SimpleSchema({
+// Payment schema
+Payment.schema = new SimpleSchema({
     paidDate: {
         type: Date,
         label: 'Paid Date',
@@ -160,7 +160,7 @@ Deposit.schema = new SimpleSchema({
         }
     },
     items: {
-        type: [Deposit.itemsSchema],
+        type: [Payment.itemsSchema],
         optional: true
     },
     amount: {
@@ -179,4 +179,4 @@ Deposit.schema = new SimpleSchema({
     }
 });
 
-Deposit.attachSchema(Deposit.schema);
+Payment.attachSchema(Payment.schema);

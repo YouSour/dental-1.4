@@ -28,8 +28,24 @@ tabularOpts.columns = [
             return moment(val).format('DD/MM/YYYY');
         }
     },
-    {data: "total", title: "Total"},
-    {data: "des", title: "Description"},
+    {
+        data: "subTotal", title: "Sub Total",
+        render: function (val, type, doc) {
+            return numeral(val).format('$0,0.00');
+        }
+    },
+    {
+        data: "subDiscount", title: "Sub Discount",
+        render: function (val, type, doc) {
+            return numeral(val).format('$0,0.00');
+        }
+    },
+    {
+        data: "total", title: "Total",
+        render: function (val, type, doc) {
+            return numeral(val).format('$0,0.00');
+        }
+    },
     {data: "patientId", title: "Patient"},
     {
         title: "Status",
@@ -40,5 +56,5 @@ tabularOpts.columns = [
         tmpl: Meteor.isClient && Template.Dental_depositAndPaymentLinkAction
     }
 ];
-tabularOpts.extraFields=['closedDate','items'];
+tabularOpts.extraFields = ['closedDate', 'items', 'paymentStatus', 'depositStatus', 'des'];
 export const RegisterTabular = new Tabular.Table(tabularOpts);

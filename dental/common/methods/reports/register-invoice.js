@@ -63,6 +63,8 @@ export const registerInvoiceReport = new ValidatedMethod({
                         registerDate: {$last: "$registerDate"},
                         des: {$last: "$des"},
                         branchId: {$last: "$branchId"},
+                        subTotal: {$last: "$subTotal"},
+                        subDiscount: {$last: "$subDiscount"},
                         total: {$last: "$total"},
                         items: {
                             $addToSet: {

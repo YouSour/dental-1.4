@@ -178,6 +178,50 @@ Register.schema = new SimpleSchema({
     items: {
         type: [Register.itemsSchema],
     },
+    subTotal: {
+        type: Number,
+        label: 'Total',
+        decimal: true,
+        autoform: {
+            type: 'inputmask',
+            inputmaskOptions: function () {
+                return inputmaskOptions.currency();
+            }
+        }
+    },
+    subDiscount: {
+        type: Number,
+        label: 'Sub Total',
+        decimal: true,
+        autoform: {
+            type: 'inputmask',
+            inputmaskOptions: function () {
+                return inputmaskOptions.currency();
+            }
+        }
+    },
+    totalDeposit: {
+        type: Number,
+        label: 'Credit',
+        decimal: true,
+        autoform: {
+            type: 'inputmask',
+            inputmaskOptions: function () {
+                return inputmaskOptions.currency();
+            }
+        }
+    },
+    credit: {
+        type: Number,
+        label: 'Credit',
+        decimal: true,
+        autoform: {
+            type: 'inputmask',
+            inputmaskOptions: function () {
+                return inputmaskOptions.currency();
+            }
+        }
+    },
     total: {
         type: Number,
         label: 'Total',
@@ -200,6 +244,14 @@ Register.schema = new SimpleSchema({
                 }
             }
         },
+        optional: true
+    },
+    depositStatus: {
+        type: String,
+        optional: true
+    },
+    paymentStatus: {
+        type: String,
         optional: true
     },
     branchId: {

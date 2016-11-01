@@ -2,14 +2,14 @@ import {Meteor} from 'meteor/meteor';
 import {SimpleSchema} from 'meteor/aldeed:simple-schema';
 
 // Collection
-import {Register} from '../../common/collections/register.js';
+import {Payment} from '../../common/collections/payment.js';
 
-Meteor.publish('dental.register', function dentalRegister() {
+Meteor.publish('dental.payment', function dentalPayment() {
     this.unblock();
 
     if (!this.userId) {
         return this.ready();
     }
 
-    return Register.find();
+    return Payment.find();
 });

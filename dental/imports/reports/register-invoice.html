@@ -76,6 +76,14 @@
 
                         <tfoot class="rpt-content-footer">
                         <tr>
+                            <td colspan="5" class="text-right">Sub Total:</td>
+                            <td class="text-right">{{numFormat subTotal "0,0.00"}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="text-right">Sub Discount ($) :</td>
+                            <td class="text-right">{{numFormat subDiscount "0,0.00"}}</td>
+                        </tr>
+                        <tr>
                             <td colspan="5" class="text-right">Total:</td>
                             <td class="text-right">{{numFormat total "0,0.00"}}</td>
                         </tr>

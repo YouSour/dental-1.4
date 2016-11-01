@@ -9,9 +9,9 @@ import {moment} from 'meteor/momentjs:moment';
 import {__} from '../../../core/common/libs/tapi18n-callback-helper.js';
 
 // Method
-import {lookupDepositItems} from '../../common/methods/lookup-register.js';
+import {lookupPaymentItems} from '../../common/methods/lookup-register.js';
 
-export const DepositItemsSchema = new SimpleSchema({
+export const PaymentItemsSchema = new SimpleSchema({
     itemId: {
         type: String,
         label: 'Item',
