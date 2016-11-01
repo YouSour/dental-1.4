@@ -46,7 +46,6 @@ let indexTmpl = Template.Dental_register,
     statusLinkActionTmpl = Template.Dental_statusLinkAction,
     depositAndPaymentLinkActionTmpl = Template.Dental_depositAndPaymentLinkAction,
     showTmpl = Template.Dental_registerShow;
-
 // Local collection
 let registerItemsCollection = new Mongo.Collection(null);
 
@@ -75,7 +74,19 @@ indexTmpl.events({
         alertify.register(fa('plus', 'Register'), renderTemplate(formTmpl)).maximize();
     },
     'click .js-update' (event, instance) {
-        alertify.register(fa('pencil', 'Register'), renderTemplate(formTmpl, {registerId: this._id})).maximize();
+        Session.set('update', true);
+        let self = this;
+        if (self.depositStatus !== "exist") {
+            alertify.register(fa('pencil', 'Register'), renderTemplate(formTmpl, {registerId: this._id})).maximize();
+        } else {
+            swal({
+                title: "Warning",
+                type: "warning",
+                text: "Hmm , look like this record already deposit , please delete it before edit !",
+                timer: 2500,
+                showConfirmButton: false
+            });
+        }
     },
     'click .js-destroy' (event, instance) {
         destroyAction(
@@ -89,6 +100,14 @@ indexTmpl.events({
         Session.set('SetActiveDate', true);
         if (_.isUndefined(this.closedDate)) {
             alertify.registerClosedDate(fa('calendar-check-o', 'Close Register'), renderTemplate(statusActionTmpl, self));
+        } else if (self.paymentStatus == "exist") {
+            swal({
+                title: "Warning",
+                type: "warning",
+                text: "Hmm , look like this record already payment , please delete it before reactive !",
+                timer: 2500,
+                showConfirmButton: false
+            });
         } else {
             swal({
                 title: "Are you sure?",
@@ -103,7 +122,7 @@ indexTmpl.events({
                 Register.update(self._id, {$set: {closedDate: ''}});
 
                 swal({
-                    title: "Reactive!",
+                    title: "Reactive",
                     text: `Your record has been reactive.`,
                     type: "success",
                     allowEscapeKey: false,
@@ -116,9 +135,42 @@ indexTmpl.events({
         }
     },
     'click .js-deposit' (event, instance){
-        let params = {};
-        let queryParams = {registerId: this._id};
+        if (!this.closedDate) {
+            let params = {registerId: this._id};
+            FlowRouter.go("dental.deposit", params);
+        } else {
+            swal({
+                title: "Warning",
+                type: "warning",
+                text: "Please , reactive this record before deposit !",
+                timer: 1800,
+                showConfirmButton: false
+            });
+        }
+    },
+    'click .js-quickDeposit' (event, instance){
+        let params = {registerId: undefined};
+        let queryParams = {d: 'new', quickDeposit: 'new'};
         FlowRouter.go("dental.deposit", params, queryParams);
+    },
+    'click .js-payment'(event, instance){
+        if (this.closedDate) {
+            let params = {registerId: this._id};
+            FlowRouter.go("dental.payment", params);
+        } else {
+            swal({
+                title: "Warning",
+                type: "warning",
+                text: "Please , close this record before payment !",
+                timer: 1800,
+                showConfirmButton: false
+            });
+        }
+    },
+    'click .js-quickPayment' (event, instance){
+        let params = {registerId: undefined};
+        let queryParams = {d: 'new', quickPayment: 'new'};
+        FlowRouter.go("dental.payment", params, queryParams);
     },
     'click .js-display' (event, instance) {
         alertify.registerShow(fa('eye', 'Register'), renderTemplate(showTmpl, {registerId: this._id}));
@@ -200,7 +252,6 @@ formTmpl.helpers({
 
             data.formType = 'update';
             data.doc = Template.instance().registerDoc.get();
-            console.log(data.doc);
         }
 
         return data;
@@ -288,6 +339,9 @@ statusActionTmpl.helpers({
         }
 
         return data;
+    },
+    todayDate(){
+        return moment().toDate();
     }
 });
 
@@ -315,6 +369,7 @@ formTmpl.onDestroyed(function () {
     registerItemsCollection.remove({});
     Session.set('patientVar');
     Session.set('patientVarDoc');
+    Session.set('update', false);
     patientId.set('');
     patientDoc.set('');
 });

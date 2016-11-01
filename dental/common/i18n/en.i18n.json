@@ -142,5 +142,9 @@
     "orderReport": {
       "title": "Customer Report"
     }
+  },
+  "specialAction": {
+    "quickDeposit" : "Quick Deposit",
+    "quickPayment" :"Quick Payment"
   }
 }

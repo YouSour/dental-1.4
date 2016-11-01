@@ -231,14 +231,14 @@ DentalRoutes.route('/register', {
         //params: ['id'],
         //queryParams: ['show', 'color'],
         title: 'Register',
-        // icon: 'cart-plus',
+        icon: 'file-text',
         parent: 'dental.home'
     }
 });
 
-// Register
+// Deposit
 import '../imports/pages/deposit.js';
-DentalRoutes.route('/deposit', {
+DentalRoutes.route('/deposit/:registerId?', {
     name: 'dental.deposit',
     title: 'Deposit',
     action: function (params, queryParams) {
@@ -248,7 +248,24 @@ DentalRoutes.route('/deposit', {
         //params: ['id'],
         //queryParams: ['show', 'color'],
         title: 'Deposit',
-        // icon: 'cart-plus',
-        parent: 'dental.home'
+        icon: 'tags',
+        parent: 'dental.register'
+    }
+});
+
+//Payment
+import '../imports/pages/payment.js';
+DentalRoutes.route('/payment/:registerId?', {
+    name: 'dental.payment',
+    title: 'Payment',
+    action: function (params, queryParams) {
+        Layout.main('Dental_payment');
+    },
+    breadcrumb: {
+        //params: ['id'],
+        //queryParams: ['show', 'color'],
+        title: 'Payment',
+        // icon: 'tags',
+        parent: 'dental.register'
     }
 });

@@ -28,27 +28,27 @@ import '../../../core/client/components/form-footer.js';
 import {lookupDiseaseItems} from '../../common/methods/lookup-disease-items.js';
 
 // Collection
-import {DepositItemsSchema} from '../../common/collections/deposit-items.js';
+import {PaymentItemsSchema} from '../../common/collections/payment-items.js';
 
 // Method
 // import {lookupRegister} from '../../common/methods/lookup-register';
-import {lookupDeposit} from '../../common/methods/lookup-deposit';
+import {lookupPayment} from '../../common/methods/lookup-payment';
 
 
 // Page
-import './deposit-items.html';
+import './payment-items.html';
 
 // Declare template
-let indexTmpl = Template.Dental_depositItems,
-    actionTmpl = Template.Dental_depositItemsAction,
-    newTmpl = Template.Dental_depositItemsNew,
-    editTmpl = Template.Dental_depositItemsEdit;
+let indexTmpl = Template.Dental_paymentItems,
+    actionTmpl = Template.Dental_paymentItemsAction,
+    newTmpl = Template.Dental_paymentItemsNew,
+    editTmpl = Template.Dental_paymentItemsEdit;
 
 // Local collection
-var depositItemsCollection;
+var paymentItemsCollection;
 
 //Reactive Var
-//get deposit doc for patient paid next time
+//get payment doc for patient paid next time
 let myData = new ReactiveVar();
 
 // Variable
@@ -66,17 +66,17 @@ indexTmpl.onCreated(function () {
     if (Template.currentData()) {
         data = Template.currentData();
     }
-    depositItemsCollection = data.depositItemsCollection;
+    paymentItemsCollection = data.paymentItemsCollection;
 });
 
 indexTmpl.helpers({
     tableSettings: function () {
-        let i18nPrefix = 'dental.deposit.schema';
+        let i18nPrefix = 'dental.payment.schema';
 
         reactiveTableSettings.showFilter = false;
         reactiveTableSettings.showNavigation = 'never';
         reactiveTableSettings.showColumnToggles = false;
-        reactiveTableSettings.collection = depositItemsCollection;
+        reactiveTableSettings.collection = paymentItemsCollection;
         reactiveTableSettings.fields = [
             {key: 'itemId', label: 'ID'},
             {
@@ -127,7 +127,7 @@ indexTmpl.helpers({
             //         return fa('bars', '', true);
             //     },
             //     headerClass: function () {
-            //         let css = 'text-center col-action-deposit-item';
+            //         let css = 'text-center col-action-payment-item';
             //         return css;
             //     },
             //     tmpl: actionTmpl, sortable: false
@@ -138,7 +138,7 @@ indexTmpl.helpers({
     },
     // total: function () {
     //     let total = 0;
-    //     let getItems = depositItemsCollection.find();
+    //     let getItems = paymentItemsCollection.find();
     //     getItems.forEach((obj)=> {
     //         total += obj.price;
     //     });
@@ -171,7 +171,7 @@ indexTmpl.events({
 
         $('[name="amount"]').val(totalPaidAmount);
 
-        depositItemsCollection.update(
+        paymentItemsCollection.update(
             {itemId: itemId}, {
                 $set: {
                     paidAmount: paidAmount,
@@ -183,7 +183,7 @@ indexTmpl.events({
         );
 
         totalBalance = 0;
-        depositItemsCollection.find().forEach(function (obj) {
+        paymentItemsCollection.find().forEach(function (obj) {
             totalBalance += obj.balance;
         });
         $('[name="totalBalance"]').val(totalBalance);
@@ -202,11 +202,11 @@ indexTmpl.events({
     //     let balance = math.round(amount - paidAmount, 2);
     //
     //     // Update
-    //     depositItemsCollection.update(
+    //     paymentItemsCollection.update(
     //         {_id: itemId},
     //         {$set: {paidAmount: paidAmount, balance: balance}}
     //     );
-    //     console.log(depositItemsCollection.find().fetch());
+    //     console.log(paymentItemsCollection.find().fetch());
     // }
 });
 
@@ -220,7 +220,7 @@ indexTmpl.events({
 
 // newTmpl.helpers({
 // schema(){
-//     return DepositItemsSchema;
+//     return PaymentItemsSchema;
 // }
 // });
 
@@ -247,15 +247,15 @@ indexTmpl.events({
 
 // Check old item
 // if (insertDoc.itemId == currentDoc.itemId) {
-//     depositItemsCollection.update(
+//     paymentItemsCollection.update(
 //         {_id: currentDoc.itemId},
 //         updateDoc
 //     );
 // } else {
-//     depositItemsCollection.remove({_id: currentDoc.itemId});
+//     paymentItemsCollection.remove({_id: currentDoc.itemId});
 //
 //     // Check exist item
-//     let exist = depositItemsCollection.findOne({_id: insertDoc.itemId});
+//     let exist = paymentItemsCollection.findOne({_id: insertDoc.itemId});
 //
 //     if (exist) {
 //
@@ -263,7 +263,7 @@ indexTmpl.events({
 //         let newPrice = insertDoc.price;
 //         let newAmount = math.round(newQty * newPrice, 2);
 //
-//         depositItemsCollection.update(
+//         paymentItemsCollection.update(
 //             {_id: insertDoc.itemId},
 //             {
 //                 $set: {
@@ -275,7 +275,7 @@ indexTmpl.events({
 //         );
 //     } else {
 //         let itemName = _.split($('[name="itemId"] option:selected').text(), " : ")[1];
-//         depositItemsCollection.insert({
+//         paymentItemsCollection.insert({
 //             _id: insertDoc.itemId,
 //             itemId: insertDoc.itemId,
 //             itemName: itemName,
@@ -297,4 +297,4 @@ indexTmpl.events({
 //         displayError(error.message);
 //     }
 // };
-// AutoForm.addHooks(['Dental_depositItemsEdit'], hooksObject);
+// AutoForm.addHooks(['Dental_paymentItemsEdit'], hooksObject);

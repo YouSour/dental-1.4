@@ -11,39 +11,39 @@ import {SelectOpts} from '../../imports/libs/select-opts.js';
 export const Order = new Mongo.Collection("dental_order");
 
 // Items sub schema
-Order.itemsSchema = new SimpleSchema({
-    itemId: {
-        type: String,
-        label: 'Item'
-    },
-    qty: {
-        type: Number,
-        label: 'Qty',
-        min: 1
-    },
-    price: {
-        type: Number,
-        label: 'Price',
-        decimal: true,
-        autoform: {
-            type: 'inputmask',
-            inputmaskOptions: function () {
-                return inputmaskOptions.currency();
-            }
-        }
-    },
-    amount: {
-        type: Number,
-        label: 'Amount',
-        decimal: true,
-        autoform: {
-            type: 'inputmask',
-            inputmaskOptions: function () {
-                return inputmaskOptions.currency();
-            }
-        }
-    }
-});
+// Order.itemsSchema = new SimpleSchema({
+//     itemId: {
+//         type: String,
+//         label: 'Item'
+//     },
+//     qty: {
+//         type: Number,
+//         label: 'Qty',
+//         min: 1
+//     },
+//     price: {
+//         type: Number,
+//         label: 'Price',
+//         decimal: true,
+//         autoform: {
+//             type: 'inputmask',
+//             inputmaskOptions: function () {
+//                 return inputmaskOptions.currency();
+//             }
+//         }
+//     },
+//     amount: {
+//         type: Number,
+//         label: 'Amount',
+//         decimal: true,
+//         autoform: {
+//             type: 'inputmask',
+//             inputmaskOptions: function () {
+//                 return inputmaskOptions.currency();
+//             }
+//         }
+//     }
+// });
 
 // Order schema
 Order.schema = new SimpleSchema({

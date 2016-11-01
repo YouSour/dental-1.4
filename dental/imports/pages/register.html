@@ -2,7 +2,16 @@
 <template name="Dental_register">
     <div class="box-header with-border">
         <h3 class="box-title">
-            {{> addNewButton}}
+            <p>
+                <button type="button" class="btn btn-primary js-create"><i class="fa fa-plus"></i> {{_ "action.addNew"}}
+                </button>
+                <button type="button" class="btn btn-warning js-quickDeposit"><i class="fa fa-plus"></i> {{_
+                        "specialAction.quickDeposit"}}
+                </button>
+                <button type="button" class="btn btn-info js-quickPayment"><i class="fa fa-plus"></i> {{_
+                        "specialAction.quickPayment"}}
+                </button>
+            </p>
         </h3>
     </div>
     <!-- /.box-header -->
@@ -21,11 +30,12 @@
         <li><a href="#" class="js-destroy"><i class="fa fa-remove"></i> {{_ "action.delete"}}</a></li>
         <li><a href="#" class="js-display"><i class="fa fa-eye"></i> {{_ "action.show"}}</a></li>
         <li role="separator" class="divider"></li>
-        <li><a href="#" class="js-invoice"><i class="fa fa-print"></i> {{_ "dental.register.registerInvoiceAction"}}</a></li>
+        <li><a href="#" class="js-invoice"><i class="fa fa-print"></i> {{_ "dental.register.registerInvoiceAction"}}</a>
+        </li>
     {{/columnAction}}
 </template>
 
-<!--Deposit-Link-Action-->
+<!--Deposit & Payment-Link-Action-->
 <template name="Dental_depositAndPaymentLinkAction">
     <button type="button" class="btn btn-social btn-sm btn-warning js-deposit">
         <i class="fa fa-star-half-o"></i> Deposit
@@ -42,7 +52,7 @@
             {{> loading}}
         {{else}}
             {{#autoForm collection=collection id="Dental_registerForm" doc=data.doc type=data.formType
-            resetOnSuccess=false}}
+                        resetOnSuccess=false}}
                 <div class="row">
                     <div class="col-md-12">
                         <div class="panel panel-default">
@@ -52,7 +62,8 @@
                                     <div class="col-md-6">
                                         {{> afQuickField name="registerDate"}}
 
-                                        <div class="form-group{{#if afFieldIsInvalid name='patientId'}} has-error{{/if}}"
+                                        <div class="form-group{{#if afFieldIsInvalid
+                                                                    name='patientId'}} has-error{{/if}}"
                                              data-required="true">
                                             <label class="control-label" for="patientId">
                                                 Patient
@@ -64,7 +75,7 @@
                                                 {{checkMember.text}}
                                             </span>
 
-                                                {{> afFieldInput name='patientId'}}
+                                            {{> afFieldInput name='patientId'}}
 
                                             {{#if afFieldIsInvalid name='patientId'}}
                                                 <span class="help-block">{{afFieldMessage name='patientId'}}</span>
@@ -116,18 +127,18 @@
 <!--dental-registerStatus-->
 <template name="Dental_registerClosedDate">
     <div class="box-body">
-            {{#autoForm collection=collection id="Dental_registerClosedDate"  doc=data.doc type=data.formType
-            resetOnSuccess=false}}
-                <div class="row">
+        {{#autoForm collection=collection id="Dental_registerClosedDate"  doc=data.doc type=data.formType
+                    resetOnSuccess=false}}
+            <div class="row">
 
-                    <div class="col-md-12">
-                        {{> afQuickField name="closedDate"}}
-                    </div>
-
+                <div class="col-md-12">
+                    {{> afQuickField name="closedDate" value=todayDate}}
                 </div>
-                {{> formFooterWithButton}}
 
-            {{/autoForm}}
+            </div>
+            {{> formFooterWithButton}}
+
+        {{/autoForm}}
     </div>
 </template>
 
@@ -147,8 +158,12 @@
                     <dd>{{patientId}} : {{patientDoc.name}}</dd>
                     <dt>Description</dt>
                     <dd>{{{des}}}</dd>
+                    <dt>Sub Total</dt>
+                    <dd>{{numFormat subTotal "$0,0.00"}}</dd>
+                    <dt>Sub Discount</dt>
+                    <dd>{{numFormat subDiscount "$0,0.00"}}</dd>
                     <dt>Total</dt>
-                    <dd>{{numFormat total "0,0.00"}}</dd>
+                    <dd>{{numFormat total "$0,0.00"}}</dd>
                     <dt>Items</dt>
                     <dd>
                         <!--jsonview-->

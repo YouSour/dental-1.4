@@ -12,15 +12,15 @@ import {lightbox} from 'meteor/theara:lightbox-helpers';
 import {tabularOpts} from '../../../core/common/libs/tabular-opts.js';
 
 // Collection
-import {Deposit} from '../collections/deposit.js';
+import {Payment} from '../collections/payment.js';
 
 // Page
-Meteor.isClient && require('../../imports/pages/deposit.html');
+Meteor.isClient && require('../../imports/pages/payment.html');
 
-tabularOpts.name = 'dental.deposit';
-tabularOpts.collection = Deposit;
+tabularOpts.name = 'dental.payment';
+tabularOpts.collection = Payment;
 tabularOpts.columns = [
-    {title: '<i class="fa fa-bars"></i>', tmpl: Meteor.isClient && Template.Dental_depositAction},
+    {title: '<i class="fa fa-bars"></i>', tmpl: Meteor.isClient && Template.Dental_paymentAction},
     {data: "_id", title: "ID"},
     {
         data: "paidDate",
@@ -29,9 +29,9 @@ tabularOpts.columns = [
             return moment(val).format('DD/MM/YYYY');
         }
     },
-    {data: 'items', title: 'Items', tmpl: Meteor.isClient && Template.Dental_depositItem},
+    {data: 'items', title: 'Items', tmpl: Meteor.isClient && Template.Dental_paymentItem},
     {data: "amount", title: "Total Amount"},
     {data: "totalBalance", title: "Total Balance"},
 ];
 tabularOpts.extraFields = ['registerId','patientId'];
-export const DepositTabular = new Tabular.Table(tabularOpts);
+export const PaymentTabular = new Tabular.Table(tabularOpts);

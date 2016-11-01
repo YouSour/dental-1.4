@@ -22,17 +22,47 @@ export const lookupRegister = new ValidatedMethod({
                 },
                 {
                     $lookup: {
+                        from: "dental_deposit",
+                        localField: "_id",
+                        foreignField: "registerId",
+                        as: "depositDoc"
+                    }
+                },
+                {
+                    $unwind: "$depositDoc"
+                },
+                {
+                    $group: {
+                        _id: '$_id',
+                        items: {$last: '$items'},
+                        registerDate: {$last: "$registerDate"},
+                        total: {$last: "$total"},
+                        patientId: {$last: "$patientId"},
+                        branchId: {$last: "$branchId"},
+                        totalDeposit: {$sum: '$depositDoc.amount'},
+                        des: {$last: "$des"}
+                    }
+                },
+                {$unwind: {path: '$items', preserveNullAndEmptyArrays: true}},
+                {
+                    $project: {
+                        _id: 1,
+                        totalDeposit: 1,
+                        items: 1,
+                        registerDate: 1,
+                        patientId: 1,
+                        total: 1,
+                        branchId: 1,
+                        des: 1
+                    }
+                },
+                {
+                    $lookup: {
                         from: "dental_patient",
                         localField: "patientId",
                         foreignField: "_id",
                         as: "patientDoc"
                     }
-                },
-                {
-                    $unwind: "$patientDoc"
-                },
-                {
-                    $unwind: "$items"
                 },
                 {
                     $lookup: {
@@ -43,9 +73,6 @@ export const lookupRegister = new ValidatedMethod({
                     }
                 },
                 {
-                    $unwind: "$itemDoc"
-                },
-                {
                     $lookup: {
                         from: "dental_laboratoryItems",
                         localField: "items.labo",
@@ -54,15 +81,21 @@ export const lookupRegister = new ValidatedMethod({
                     }
                 },
                 {
-                    $unwind: "$laboDoc"
-                },
-                {
                     $lookup: {
                         from: "dental_doctor",
                         localField: "items.doctor",
                         foreignField: "_id",
                         as: "drDoc"
                     }
+                },
+                {
+                    $unwind: "$patientDoc"
+                },
+                {
+                    $unwind: "$itemDoc"
+                },
+                {
+                    $unwind: "$laboDoc"
                 },
                 {
                     $unwind: "$drDoc"
@@ -75,6 +108,9 @@ export const lookupRegister = new ValidatedMethod({
                         patientDoc: 1,
                         des: 1,
                         branchId: 1,
+                        totalDeposit: 1,
+                        // subTotal: 1,
+                        // subDiscount: 1,
                         total: 1,
                         items: 1,
                         itemDoc: 1,
@@ -82,7 +118,7 @@ export const lookupRegister = new ValidatedMethod({
                         laboDoc: 1,
                         laboName: "$laboDoc.name",
                         drDoc: 1,
-                        doctorName: "$drDoc.name"
+                        doctorName: "$drDoc.name",
                     }
                 },
                 {
@@ -93,6 +129,9 @@ export const lookupRegister = new ValidatedMethod({
                         patientDoc: {$last: "$patientDoc"},
                         des: {$last: "$des"},
                         branchId: {$last: "$branchId"},
+                        // subTotal: { $last: "$subTotal" },
+                        totalDeposit: {$last: "$totalDeposit"},
+                        // subDiscount: { $last: "$subDiscount" },
                         total: {$last: "$total"},
                         items: {
                             $addToSet: {
@@ -105,16 +144,17 @@ export const lookupRegister = new ValidatedMethod({
                                 amount: "$items.amount",
                                 discount: "$items.discount",
                                 labo: "$items.labo",
-                                laboName:"$laboName",
+                                laboName: "$laboName",
                                 laboAmount: "$items.laboAmount",
                                 doctor: "$items.doctor",
-                                doctorName:"$doctorName",
+                                doctorName: "$doctorName",
                                 doctorAmount: "$items.doctorAmount"
                             }
                         }
                     }
                 }
             ]);
+            console.log(data[0]);
             return data[0];
         }
     }

@@ -26,6 +26,7 @@ import '../../../core/client/components/form-footer.js';
 
 // Method
 import {lookupDiseaseItems} from '../../common/methods/lookup-disease-items.js';
+import {lookupLaboItems} from '../../common/methods/lookup-labo-items.js';
 
 // Collection
 import {RegisterItemsSchema} from '../../common/collections/register-items.js';
@@ -159,14 +160,23 @@ indexTmpl.helpers({
 
         return reactiveTableSettings;
     },
-    total: function () {
-        let total = 0;
+    subTotal: function () {
+        let subTotal = 0;
         let getItems = registerItemsCollection.find();
         getItems.forEach((obj)=> {
-            total += obj.amount;
+            subTotal += obj.amount;
         });
-
-        return total;
+        return subTotal;
+    },
+    total: function () {
+        if (!Session.get('update')) {
+            let total = 0;
+            let getItems = registerItemsCollection.find();
+            getItems.forEach((obj)=> {
+                total += obj.amount;
+            });
+            return total;
+        }
     }
 });
 
@@ -211,6 +221,16 @@ indexTmpl.events({
             {_id: itemId},
             {$set: {qty: qty, price: price, amount: amount}}
         );
+    },
+    'keyup [name="subDiscount"]'(event, instance){
+        let subTotal = $('[name="subTotal"]').val();
+        let subDiscount = $('[name="subDiscount"]').val();
+        $('[name="total"]').val(subTotal - subDiscount);
+
+        registerItemsCollection.update(
+            {_id: itemId},
+            {$set: {qty: qty, price: price, amount: amount}}
+        );
     }
 });
 
@@ -223,6 +243,7 @@ newTmpl.onCreated(function () {
     this.price = new ReactiveVar(0);
     this.discount = new ReactiveVar(0);
     this.amount = new ReactiveVar(0);
+    this.laboAmount = new ReactiveVar(0);
 });
 
 newTmpl.helpers({
@@ -237,6 +258,9 @@ newTmpl.helpers({
         let amount = instance.qty.get() * instance.price.get();
         let amountAfterDiscount = math.round(amount - (amount * instance.discount.get() / 100), 2);
         return amountAfterDiscount;
+    },
+    laboAmount: function () {
+        return Template.instance().laboAmount.get();
     },
     disabledAddItemBtn: function () {
         const instance = Template.instance();
@@ -284,6 +308,26 @@ newTmpl.events({
         instance.$('[name="date"]').val(moment().format('DD/MM/YYYY'));
         instance.qty.set(1);
         instance.date.set(moment().format('DD/MM/YYYY'));
+    },
+    'change [name="labo"]': function (event, instance) {
+        let labo = event.currentTarget.value;
+        if (labo) {
+            $.blockUI();
+            lookupLaboItems.callPromise({
+                labo: labo
+            }).then((result)=> {
+                instance.laboAmount.set(result.price);
+
+                Meteor.setTimeout(()=> {
+                    $.unblockUI();
+                }, 100);
+
+            }).catch((err)=> {
+                console.log(err.message);
+            });
+        } else {
+            instance.laboAmount.set(0);
+        }
     },
     'keyup [name="qty"],[name="price"],[name="discount"]': function (event, instance) {
         let qty = instance.$('[name="qty"]').val();
@@ -375,7 +419,7 @@ newTmpl.events({
                 doctorAmount: doctorAmount
             });
         }
-    },
+    }
 });
 
 // Edit
@@ -384,6 +428,7 @@ editTmpl.onCreated(function () {
     this.price = new ReactiveVar(0);
     this.discount = new ReactiveVar(0);
     this.amount = new ReactiveVar(0);
+    this.laboAmount = new ReactiveVar(0);
 
     this.autorun(()=> {
         let data = Template.currentData();
@@ -391,6 +436,7 @@ editTmpl.onCreated(function () {
         this.qty.set(data.qty);
         this.price.set(data.price);
         this.discount.set(data.discount);
+        this.laboAmount.set(data.laboAmount);
     });
 });
 
@@ -404,6 +450,9 @@ editTmpl.helpers({
     },
     price: function () {
         return Template.instance().price.get();
+    },
+    laboAmount: function () {
+        return Template.instance().laboAmount.get();
     },
     amount: function () {
         const instance = Template.instance();
@@ -439,6 +488,26 @@ editTmpl.events({
         } else {
             instance.price.set(0);
             displayWarning('Please , Choose Patient !');
+        }
+    },
+    'change [name="labo"]': function (event, instance) {
+        let labo = event.currentTarget.value;
+        if (labo) {
+            $.blockUI();
+            lookupLaboItems.callPromise({
+                labo: labo
+            }).then((result)=> {
+                instance.laboAmount.set(result.price);
+
+                Meteor.setTimeout(()=> {
+                    $.unblockUI();
+                }, 100);
+
+            }).catch((err)=> {
+                console.log(err.message);
+            });
+        } else {
+            instance.laboAmount.set(0);
         }
     },
     'keyup [name="qty"],[name="price"],[name="discount"]': function (event, instance) {

@@ -24,42 +24,43 @@ import '../../../core/client/components/form-footer.js';
 
 // Method
 import {lookupRegister} from '../../common/methods/lookup-register';
-import {lookupDeposit} from '../../common/methods/lookup-deposit';
+import {lookupPayment} from '../../common/methods/lookup-payment';
 
 // Collection
 import {Register} from '../../common/collections/register.js';
 import {Deposit} from '../../common/collections/deposit.js';
+import {Payment} from '../../common/collections/payment.js';
 
 // Tabular
-import {DepositTabular} from '../../common/tabulars/deposit.js';
+import {PaymentTabular} from '../../common/tabulars/payment.js';
 
 // Page
-import './deposit.html';
-import './deposit-items.js';
+import './payment.html';
+import './payment-items.js';
 import './register.js';
 
 // Local collection
-let depositItemsCollection = new Mongo.Collection(null);
+let paymentItemsCollection = new Mongo.Collection(null);
 
 // Declare template
-let indexTmpl = Template.Dental_deposit,
-    itemsTmpl = Template.Dental_depositItem,
-    formTmpl = Template.Dental_depositForm,
-    editTmpl = Template.Dental_depositEditForm,
-    showTmpl = Template.Dental_depositShow;
+let indexTmpl = Template.Dental_payment,
+    itemsTmpl = Template.Dental_paymentItem,
+    formTmpl = Template.Dental_paymentForm,
+    editTmpl = Template.Dental_paymentEditForm,
+    showTmpl = Template.Dental_paymentShow;
 
 // reactiveVar
-let depositDoc = new ReactiveVar();
+let paymentDoc = new ReactiveVar();
 
 Tracker.autorun(()=> {
     let registerId = FlowRouter.getParam("registerId");
-    let newDeposit = FlowRouter.query.get('d');
+    let newPayment = FlowRouter.query.get('d');
 
-    if (registerId && _.isUndefined(newDeposit)) {
-        lookupDeposit.callPromise({
+    if (registerId && _.isUndefined(newPayment)) {
+        lookupPayment.callPromise({
             registerId: registerId
         }).then((result)=> {
-            depositDoc.set(result);
+            paymentDoc.set(result);
         }).catch((err)=> {
             console.log(err);
         });
@@ -70,29 +71,34 @@ Tracker.autorun(()=> {
 // Index
 indexTmpl.onCreated(function () {
     // Create new  alertify
-    createNewAlertify('deposit', {size: 'lg'});
-    createNewAlertify('depositShow', {size: 'lg'});
+    createNewAlertify('payment', {size: 'lg'});
+    createNewAlertify('paymentShow', {size: 'lg'});
 
-    //Deposit
+    //Payment
+    this.subscribe('dental.payment');
     this.subscribe('dental.deposit');
     this.subscribe('dental.register');
 });
 
 indexTmpl.helpers({
     tabularTable(){
-        return DepositTabular;
+        return PaymentTabular;
     },
     selector() {
         return {branchId: Session.get('currentByBranch'), registerId: FlowRouter.getParam("registerId")};
     },
-    depositData(){
+    paymentData(){
         let registerCollection = Register.find();
         let depositCollection = Deposit.find();
-        let totalAmount = 0, totalDeposit = 0, totalBalance = 0, statusClosedCount = 0, statusActiveCount = 0;
+        let paymentCollection = Payment.find();
+        let totalAmount = 0, totalPayment = 0, totalBalance = 0, totalDeposit = 0, statusClosedCount = 0, statusActiveCount = 0;
+
+        depositCollection.forEach(function (obj) {
+            totalDeposit += obj.amount;
+        });
 
         registerCollection.forEach(function (obj) {
             totalAmount += obj.total;
-
             if (!_.isUndefined(obj.closedDate)) {
                 statusClosedCount += 1;
             } else {
@@ -100,16 +106,17 @@ indexTmpl.helpers({
             }
         });
 
-        depositCollection.forEach(function (obj) {
-            totalDeposit += obj.amount;
+        paymentCollection.forEach(function (obj) {
+            totalPayment += obj.amount;
         });
 
-        totalBalance = totalAmount - totalDeposit;
+        totalBalance = (totalAmount - totalDeposit) - totalPayment;
 
         let data = {
-            depositCount: Deposit.find().count(),
+            paymentCount: Payment.find().count(),
             totalAmount: totalAmount,
             totalDeposit: totalDeposit,
+            totalPayment: totalPayment,
             totalBalance: totalBalance,
             statusActiveCount: statusActiveCount,
             statusClosedCount: statusClosedCount
@@ -117,8 +124,8 @@ indexTmpl.helpers({
 
         return data;
     },
-    checkQuickDeposit () {
-        if (FlowRouter.query.get('quickDeposit') == undefined) {
+    checkQuickPayment () {
+        if (FlowRouter.query.get('quickPayment') == undefined) {
             return true;
         }
     }
@@ -127,13 +134,13 @@ indexTmpl.helpers({
 indexTmpl.events({
     'click .js-create' (event, instance) {
         FlowRouter.query.set({d: 'new'});
-        alertify.deposit(fa('plus', 'Deposit'), renderTemplate(formTmpl)).maximize();
+        alertify.payment(fa('plus', 'Payment'), renderTemplate(formTmpl)).maximize();
     },
     'click .js-update' (event, instance) {
-        let lastDepositId = depositDoc.get().deposit._id;
-        if (lastDepositId == this._id) {
+        let lastPaymentId = paymentDoc.get().payment._id;
+        if (lastPaymentId == this._id) {
             let dataUpdate = this;
-            alertify.deposit(fa('pencil', 'Deposit'), renderTemplate(editTmpl, dataUpdate));
+            alertify.payment(fa('pencil', 'Payment'), renderTemplate(editTmpl, dataUpdate));
         } else {
             swal({
                 title: "Warning",
@@ -145,12 +152,12 @@ indexTmpl.events({
         }
     },
     'click .js-destroy' (event, instance) {
-        let lastDepositId = depositDoc.get().deposit._id;
-        if (lastDepositId == this._id) {
+        let lastPaymentId = paymentDoc.get().payment._id;
+        if (lastPaymentId == this._id) {
             destroyAction(
-                Deposit,
+                Payment,
                 {_id: this._id},
-                {title: 'Deposit', itemTitle: this._id}
+                {title: 'Payment', itemTitle: this._id}
             );
         } else {
             swal({
@@ -163,7 +170,7 @@ indexTmpl.events({
         }
     },
     'click .js-display' (event, instance) {
-        alertify.depositShow(fa('eye', 'Deposit'), renderTemplate(showTmpl, {depositId: this._id}));
+        alertify.paymentShow(fa('eye', 'Payment'), renderTemplate(showTmpl, {paymentId: this._id}));
     }
 });
 
@@ -174,25 +181,21 @@ itemsTmpl.helpers({
     }
 });
 
-
 // Form
 formTmpl.onCreated(function () {
-
     let self = this;
-
-    self.depositDoc = new ReactiveVar();
-    // let registerId = FlowRouter.getParam("registerId");
-    let newDeposit = FlowRouter.query.get('d');
+    self.paymentDoc = new ReactiveVar();
+    let newPayment = FlowRouter.query.get('d');
     let uponSave = FlowRouter.query.get('sid');
 
     self.autorun(()=> {
         let registerId = FlowRouter.getParam("registerId") || Session.get('registerId');
 
-        if (registerId && newDeposit == 'new' || uponSave) {
-            lookupDeposit.callPromise({
+        if (registerId && newPayment == 'new' || uponSave) {
+            lookupPayment.callPromise({
                 registerId: registerId
             }).then((result)=> {
-                self.depositDoc.set(result);
+                self.paymentDoc.set(result);
             }).catch((err)=> {
                 console.log(err);
             });
@@ -204,23 +207,22 @@ formTmpl.onCreated(function () {
 
 formTmpl.helpers({
     collection(){
-        return Deposit;
+        return Payment;
     },
-    depositItemsCollection(){
-        return depositItemsCollection;
+    paymentItemsCollection(){
+        return paymentItemsCollection;
     },
     data () {
-        let depositDoc = Template.instance().depositDoc.get();
-
-        if (depositDoc) {
-            if (_.isNull(depositDoc.closedDate)) {
+        let paymentDoc = Template.instance().paymentDoc.get();
+        if (paymentDoc) {
+            if (!_.isNull(paymentDoc.closedDate)) {
                 let data = {
                     formType: 'insert',
                     doc: {
-                        registerId: _.isEmpty(this) ? depositDoc._id : depositDoc.registerId,
-                        patientId: depositDoc.patientId,
+                        registerId: _.isEmpty(this) ? paymentDoc._id : paymentDoc.registerId,
+                        patientId: paymentDoc.patientId,
                         paidDate: moment().toDate(),
-                        amount: !_.isUndefined(depositDoc.deposit.total) ? depositDoc.deposit.total : depositDoc.deposit.totalBalance
+                        amount: !_.isUndefined(paymentDoc.payment.total) ? paymentDoc.payment.total : paymentDoc.payment.totalBalance
                     }
                 };
                 data.date = moment().toDate();
@@ -228,22 +230,22 @@ formTmpl.helpers({
 
                 if (!_.isEmpty(currentData)) {
                     data.formType = 'update';
-                    depositDoc.deposit.items = currentData.items;
+                    paymentDoc.payment.items = currentData.items;
                 }
-                depositItemsCollection.remove({});
-                depositDoc.deposit.items.forEach(function (item) {
+                paymentItemsCollection.remove({});
+                paymentDoc.payment.items.forEach(function (item) {
                     if (item.tempBalance && item.tempBalance > 0 && item.status == "permission") {
-                        if (_.isUndefined(depositDoc.deposit.depositCount)) {
+                        if (_.isUndefined(paymentDoc.payment.paymentCount)) {
                             item.amount = item.tempBalance;
                             item.paidAmount = item.amount;
                             item.balance = 0;
                         }
-                        depositItemsCollection.insert(item);
+                        paymentItemsCollection.insert(item);
                     } else if (!_.isUndefined(item.date)) {
 
                         item.paidAmount = item.amount;
                         item.balance = 0;
-                        depositItemsCollection.insert(item);
+                        paymentItemsCollection.insert(item);
                     }
                 });
                 $('button[type=submit]').removeAttr('disabled');
@@ -252,22 +254,20 @@ formTmpl.helpers({
                 swal({
                     title: "Warning",
                     type: "warning",
-                    text: "Please , reactive this record before deposit !",
+                    text: "Please , close this record before payment !",
                     timer: 1800,
                     showConfirmButton: false
                 });
-
                 $('button[type=submit]').attr('disabled', 'true');
             }
         }
     },
-    checkQuickDeposit () {
-        if (FlowRouter.query.get('quickDeposit') == 'new') {
+    checkQuickPayment () {
+        if (FlowRouter.query.get('quickPayment') == 'new') {
             return true;
         }
     }
 });
-
 
 formTmpl.events({
     'keyup [name="amount"]': function (event, instance) {
@@ -296,7 +296,7 @@ formTmpl.events({
                 balance = amount;
             }
 
-            depositItemsCollection.update(
+            paymentItemsCollection.update(
                 {itemId: itemId},
                 {
                     $set: {
@@ -310,7 +310,7 @@ formTmpl.events({
 
             //totalBalance
             totalBalance = 0;
-            depositItemsCollection.find().forEach(function (obj) {
+            paymentItemsCollection.find().forEach(function (obj) {
                 totalBalance += obj.balance;
             });
             $('[name="totalBalance"]').val(totalBalance);
@@ -332,30 +332,29 @@ formTmpl.events({
 
 editTmpl.helpers({
     collection(){
-        return Deposit;
+        return Payment;
     },
-    depositItemsCollection(){
-        return depositItemsCollection;
+    paymentItemsCollection(){
+        return paymentItemsCollection;
     },
     data () {
         let currentData = Template.currentData();
-
 
         let data = {
             doc: currentData
         };
         if (currentData) {
             var items = currentData.items;
-            depositItemsCollection.remove({});
+            paymentItemsCollection.remove({});
             items.forEach(function (item) {
-                depositItemsCollection.insert(item);
+                paymentItemsCollection.insert(item);
             });
         }
 
         return data;
     },
-    checkQuickDeposit () {
-        if (FlowRouter.query.get('quickDeposit') == 'new') {
+    checkQuickPayment () {
+        if (FlowRouter.query.get('quickPayment') == 'new') {
             return true;
         }
     }
@@ -388,7 +387,7 @@ editTmpl.events({
                 balance = amount;
             }
 
-            depositItemsCollection.update(
+            paymentItemsCollection.update(
                 {itemId: itemId},
                 {
                     $set: {
@@ -405,7 +404,7 @@ editTmpl.events({
 
 formTmpl.onDestroyed(function () {
     // Remove items collection
-    depositItemsCollection.remove({});
+    paymentItemsCollection.remove({});
     Session.set('edit', undefined);
     Session.set('patientId', '');
     Session.set('registerId', '');
@@ -416,14 +415,14 @@ formTmpl.onDestroyed(function () {
 showTmpl.onCreated(function () {
     this.autorun(()=> {
         let currentData = Template.currentData();
-        this.subscribe('dental.depositById', currentData.depositId);
+        this.subscribe('dental.paymentById', currentData.paymentId);
     });
 });
 
 showTmpl.helpers({
     data () {
         let currentData = Template.currentData();
-        let data = Deposit.findOne(currentData.depositId);
+        let data = Payment.findOne(currentData.paymentId);
         data.totalAmount = data.amount + data.totalBalance;
         return data;
     }
@@ -433,7 +432,7 @@ showTmpl.helpers({
 let hooksObject = {
     before: {
         insert: function (doc) {
-            let items = depositItemsCollection.find().fetch();
+            let items = paymentItemsCollection.find().fetch();
             items.forEach(function (item) {
                 item.status = item.balance > 0 ? "permission" : "ban"
             });
@@ -442,7 +441,7 @@ let hooksObject = {
             return doc;
         },
         update: function (doc) {
-            let items = depositItemsCollection.find().fetch();
+            let items = paymentItemsCollection.find().fetch();
             items.forEach(function (item) {
                 item.status = item.balance > 0 ? "permission" : "ban"
             });
@@ -453,9 +452,9 @@ let hooksObject = {
     },
     onSuccess (formType, result) {
         // Remove items collection
-        depositItemsCollection.remove({});
+        paymentItemsCollection.remove({});
         displaySuccess();
-        alertify.deposit().close();
+        alertify.payment().close();
 
     },
     onError (formType, error) {
@@ -463,4 +462,4 @@ let hooksObject = {
     }
 };
 
-AutoForm.addHooks(['Dental_depositForm', 'Dental_depositEditForm'], hooksObject);
+AutoForm.addHooks(['Dental_paymentForm', 'Dental_paymentEditForm'], hooksObject);

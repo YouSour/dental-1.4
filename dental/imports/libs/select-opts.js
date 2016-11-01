@@ -6,6 +6,7 @@ import {LookupValue} from '../../common/collections/lookup-value';
 import {Branch} from '../../../core/common/collections/branch.js';
 import {CaseHistory} from '../../common/collections/case-history.js';
 import {DiseaseCategories} from '../../common/collections/disease-categories.js';
+import {Register} from '../../common/collections/register.js';
 
 export const SelectOpts = {
     branch: function (selectOne) {
@@ -57,4 +58,19 @@ export const SelectOpts = {
 
         return list;
     },
+    register: function (selectOne) {
+        let list = [];
+        let registerId = FlowRouter.getParam("registerId");
+        let patientId = Session.get('patientId');
+        if (selectOne) {
+            list.push({label: "(Select One)", value: ""});
+        }
+
+        Register.find({$or: [{patientId: patientId}, {_id: registerId}]})
+            .forEach(function (obj) {
+                list.push({label: obj._id, value: obj._id});
+            });
+
+        return list;
+    }
 };

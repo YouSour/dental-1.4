@@ -318,3 +318,47 @@ SelectOptsMethod.register = new ValidatedMethod({
         }
     }
 });
+
+SelectOptsMethod.registerByPatient = new ValidatedMethod({
+    name: 'dental.selectOptsMethod.registerByPatient',
+    validate: null,
+    run(options) {
+        if (!this.isSimulation) {
+            this.unblock();
+
+            let list = [], selector = {};
+            let searchText = options.searchText;
+            let values = options.values;
+            let params = options.params || {};
+
+            if (searchText && params.patientId) {
+                selector = {
+                    $or: [
+                        {_id: {$regex: searchText, $options: 'i'}},
+                        {name: {$regex: searchText, $options: 'i'}}
+                    ],
+                    patientId: params.patientId
+                };
+            } else if (values.length) {
+                selector = {patientId: params.patientId};
+
+            }
+            else if (params.patientId) {
+                selector = {patientId: params.patientId};
+            }
+
+            if (selector) {
+                let data = Register.find(selector, {limit: 10});
+
+                data.forEach(function (value) {
+                    let label = value._id;
+                    list.push({label: label, value: value._id});
+                });
+
+                return list;
+            }
+
+
+        }
+    }
+});
