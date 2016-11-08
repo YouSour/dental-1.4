@@ -10,6 +10,7 @@ import {Customer} from '../collections/customer.js';
 import {Item} from '../collections/item.js';
 import {Order} from '../collections/order.js';
 import {Patient} from '../collections/patient.js';
+import {Staff} from '../collections/staff.js';
 import {Doctor} from '../collections/doctor.js';
 import {LaboratoryItems} from '../collections/laboratory-items.js';
 import {DiseaseItems} from '../collections/disease-items.js';
@@ -42,6 +43,41 @@ SelectOptsMethod.customer = new ValidatedMethod({
             }
 
             let data = Customer.find(selector, {limit: 10});
+            data.forEach(function (value) {
+                let label = value._id + ' : ' + value.name;
+                list.push({label: label, value: value._id});
+            });
+
+            return list;
+        }
+    }
+});
+
+SelectOptsMethod.staff = new ValidatedMethod({
+    name: 'dental.selectOptsMethod.staff',
+    validate: null,
+    run(options) {
+        if (!this.isSimulation) {
+            this.unblock();
+
+            let list = [], selector = {};
+            let searchText = options.searchText;
+            let values = options.values;
+            let params = options.params || {};
+
+            if (searchText && params.branchId) {
+                selector = {
+                    $or: [
+                        {_id: {$regex: searchText, $options: 'i'}},
+                        {name: {$regex: searchText, $options: 'i'}}
+                    ],
+                    branchId: params.branchId
+                };
+            } else if (values.length) {
+                selector = {_id: {$in: values}};
+            }
+
+            let data = Staff.find(selector, {limit: 10});
             data.forEach(function (value) {
                 let label = value._id + ' : ' + value.name;
                 list.push({label: label, value: value._id});

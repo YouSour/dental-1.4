@@ -14,9 +14,9 @@
             </a>
         </li>
         <!--<li class="{{isActiveRoute name='dental.order'}}">-->
-            <!--<a href="{{pathFor 'dental.order'}}">-->
-                <!--<i class="fa fa-circle-o"></i> <span>{{_ "dental.sidebarMenu.order"}}</span>-->
-            <!--</a>-->
+        <!--<a href="{{pathFor 'dental.order'}}">-->
+        <!--<i class="fa fa-circle-o"></i> <span>{{_ "dental.sidebarMenu.order"}}</span>-->
+        <!--</a>-->
         <!--</li>-->
         <li class="{{isActiveRoute name='dental.register'}}">
             <a href="{{pathFor 'dental.register'}}">
@@ -28,6 +28,16 @@
     <!--Report-->
     {{#if isInRole 'reporter' 'Dental'}}
         <li class="header"><i class="fa fa-file-text-o"></i> REPORT</li>
+        <li class="{{isActiveRoute name='dental.depositReport'}}">
+            <a href="{{pathFor 'dental.depositReport'}}">
+                <i class="fa fa-file-o"></i> <span>Deposit</span>
+            </a>
+        </li>
+        <li class="{{isActiveRoute name='dental.paymentReport'}}">
+            <a href="{{pathFor 'dental.paymentReport'}}">
+                <i class="fa fa-file-o"></i> <span>Payment</span>
+            </a>
+        </li>
         <li class="{{isActiveRoute name='dental.invoiceReport'}}">
             <a href="{{pathFor 'dental.invoiceReport'}}">
                 <i class="fa fa-file-o"></i> <span>Invoice</span>
@@ -36,6 +46,18 @@
         <li class="{{isActiveRoute name='dental.orderReport'}}">
             <a href="{{pathFor 'dental.orderReport'}}">
                 <i class="fa fa-file-o"></i> <span>Order</span>
+            </a>
+        </li>
+
+        <li class="header"><i class="fa fa-file-text-o"></i> SUMMARY REPORT</li>
+        <li class="{{isActiveRoute name='dental.diseaseReport'}}">
+            <a href="{{pathFor 'dental.diseaseReport'}}">
+                <i class="fa fa-file-o"></i> <span>Disease</span>
+            </a>
+        </li>
+        <li class="{{isActiveRoute name='dental.analysisPatientReport'}}">
+            <a href="{{pathFor 'dental.analysisPatientReport'}}">
+                <i class="fa fa-file-o"></i> <span>Analysis Patient</span>
             </a>
         </li>
     {{/if}}
@@ -67,11 +89,13 @@
             </a>
             <ul class="treeview-menu" style="display: none;">
                 <li class="{{isActiveRoute name='dental.diseaseCategories'}}">
-                    <a href="{{pathFor 'dental.diseaseCategories'}}"><i class="fa fa-circle-o"></i> {{_ "dental.sidebarMenu.diseaseCategories"}}</a>
+                    <a href="{{pathFor 'dental.diseaseCategories'}}"><i class="fa fa-circle-o"></i> {{_
+                            "dental.sidebarMenu.diseaseCategories"}}</a>
                 </li>
 
                 <li class="{{isActiveRoute name='dental.diseaseItems'}}">
-                    <a href="{{pathFor 'dental.diseaseItems'}}"><i class="fa fa-circle-o"></i> {{_ "dental.sidebarMenu.diseaseItems"}}</a>
+                    <a href="{{pathFor 'dental.diseaseItems'}}"><i class="fa fa-circle-o"></i> {{_
+                            "dental.sidebarMenu.diseaseItems"}}</a>
                 </li>
             </ul>
         </li>
@@ -84,7 +108,8 @@
             </a>
             <ul class="treeview-menu" style="display: none;">
                 <li class="{{isActiveRoute name='dental.laboratoryItems'}}">
-                    <a href="{{pathFor 'dental.laboratoryItems'}}"><i class="fa fa-circle-o"></i> {{_ "dental.sidebarMenu.laboratoryItems"}}</a>
+                    <a href="{{pathFor 'dental.laboratoryItems'}}"><i class="fa fa-circle-o"></i> {{_
+                            "dental.sidebarMenu.laboratoryItems"}}</a>
                 </li>
             </ul>
         </li>

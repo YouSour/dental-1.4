@@ -127,6 +127,17 @@ Payment.schema = new SimpleSchema({
             // }
         }
     },
+    staffId: {
+        type: String,
+        label: 'Staff',
+        autoform: {
+            type: 'universe-select',
+            afFieldInput: {
+                uniPlaceholder: 'Select One',
+                optionsMethod: 'dental.selectOptsMethod.staff',
+            }
+        }
+    },
     patientId: {
         type: String,
         label: 'Patient',
@@ -173,6 +184,10 @@ Payment.schema = new SimpleSchema({
         label: 'Balance',
         defaultValue: 0,
         decimal: true
+    },
+    condition: {
+        type: String,
+        defaultValue: "Partial"
     },
     branchId: {
         type: String

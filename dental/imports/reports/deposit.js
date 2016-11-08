@@ -10,7 +10,6 @@ import 'printthis';
 // Lib
 import {displaySuccess, displayError} from '../../../core/client/libs/display-alert.js';
 
-
 // Component
 import '../../../core/imports/layouts/report/content.html';
 import '../../../core/imports/layouts/report/sign-footer.html';
@@ -18,81 +17,61 @@ import '../../../core/client/components/loading.js';
 import '../../../core/client/components/form-footer.js';
 
 // Method
-import {registerInvoiceReport} from '../../common/methods/reports/register-invoice.js';
+import {depositReport} from '../../common/methods/reports/deposit.js';
 
 // Schema
-import {InvoiceSchema} from '../../common/collections/reports/invoice.js';
+import {DepositSchema} from '../../common/collections/reports/deposit.js';
 
 // Page
-import './register-invoice.html';
+import './deposit.html';
 
 // Declare template
-let indexTmpl = Template.Dental_registerInvoiceReport,
-    genTmpl = Template.Dental_registerInvoiceReportGen;
+let indexTmpl = Template.Dental_depositReport;
 
+// State
+let formDataState = new ReactiveVar(null);
 
-// Form
+// Index
 indexTmpl.onCreated(function () {
+    this.rptInit = new ReactiveVar(false);
+    this.rptData = new ReactiveVar(null);
+
     this.autorun(() => {
-        // Subscribe data for form filter
+        // Report Data
+        if (formDataState.get()) {
+            this.rptInit.set(true);
+            this.rptData.set(false);
+
+            depositReport.callPromise(formDataState.get())
+                .then((result)=> {
+                    this.rptData.set(result);
+                }).catch((err)=> {
+                    console.log(err.message);
+                }
+            );
+        }
+
     });
 });
 
 indexTmpl.helpers({
     schema(){
-        return InvoiceSchema;
-    }
-});
-
-// Form hook
-let hooksObject = {
-    onSubmit: function (insertDoc, updateDoc, currentDoc) {
-        this.event.preventDefault();
-        this.done(null, insertDoc);
+        return DepositSchema;
     },
-    onSuccess: function (formType, result) {
-        let params = {};
-        let queryParams = result;
-        let path = FlowRouter.path("dental.registerInvoiceReportGe", params, queryParams);
-
-        window.open(path, '_blank');
+    rptInit(){
+        let instance = Template.instance();
+        return instance.rptInit.get();
     },
-    onError: function (formType, error) {
-        displayError(error.message);
-    }
-};
-
-AutoForm.addHooks('Dental_registerInvoiceReport', hooksObject);
-
-// Generate
-genTmpl.onCreated(function () {
-    this.rptData = new ReactiveVar();
-
-    this.autorun(()=> {
-        let queryParams = FlowRouter.current().queryParams;
-
-        registerInvoiceReport.callPromise(queryParams)
-            .then((result)=> {
-                console.log(result);
-                this.rptData.set(result);
-            }).catch((err)=> {
-                console.log(err.message);
-            }
-        );
-    });
-});
-genTmpl.helpers({
-    rptData(){
-        let data = Template.instance().rptData.get();
-        data.rptContent.credit = data.rptContent.subTotal - (data.rptContent.totalDeposit + data.rptContent.totalPayment);
-        return Template.instance().rptData.get();
+    rptData: function () {
+        let instance = Template.instance();
+        return instance.rptData.get();
     },
     increaseIndex(index){
         return index += 1;
     }
 });
 
-genTmpl.events({
+indexTmpl.events({
     'click .btn-print-this'(event, instance){
         // Print This Package
         let opts = {
@@ -119,3 +98,25 @@ genTmpl.events({
         $('#print-data').printArea(opts);
     }
 });
+
+indexTmpl.onDestroyed(function () {
+    formDataState.set(null);
+});
+
+// hook
+let hooksObject = {
+    onSubmit: function (insertDoc, updateDoc, currentDoc) {
+        this.event.preventDefault();
+        formDataState.set(null);
+
+        this.done(null, insertDoc);
+    },
+    onSuccess: function (formType, result) {
+        formDataState.set(result);
+    },
+    onError: function (formType, error) {
+        displayError(error.message);
+    }
+};
+
+AutoForm.addHooks('Dental_depositReport', hooksObject);

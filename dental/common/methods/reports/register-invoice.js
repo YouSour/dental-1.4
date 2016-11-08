@@ -31,18 +31,40 @@ export const registerInvoiceReport = new ValidatedMethod({
                     $match: {_id: registerId}
                 },
                 {
-                    $unwind: "$items"
-                },
-                {
                     $lookup: {
-                        from: "dental_diseaseItems",
-                        localField: "items.itemId",
-                        foreignField: "_id",
-                        as: "itemDoc"
+                        from: "dental_deposit",
+                        localField: "_id",
+                        foreignField: "registerId",
+                        as: "depositDoc"
                     }
                 },
                 {
-                    $unwind: "$itemDoc"
+                    $unwind: {path: '$depositDoc', preserveNullAndEmptyArrays: true}
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        patientId: {$last: "$patientId"},
+                        items: {$last: "$items"},
+                        depositDoc: {$addToSet: "$depositDoc"},
+                        totalDeposit: {$sum: '$depositDoc.amount'},
+                        registerDate: {$last: "$registerDate"},
+                        des: {$last: "$des"},
+                        branchId: {$last: "$branchId"},
+                        subTotal: {$last: "$subTotal"},
+                        total: {$last: "$total"},
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "dental_payment",
+                        localField: "_id",
+                        foreignField: "registerId",
+                        as: "paymentDoc"
+                    }
+                },
+                {
+                    $unwind: {path: '$paymentDoc', preserveNullAndEmptyArrays: true}
                 },
                 {
                     $lookup: {
@@ -58,14 +80,42 @@ export const registerInvoiceReport = new ValidatedMethod({
                 {
                     $group: {
                         _id: "$_id",
-                        patientId: {$last: "$patientId"},
-                        patientDoc: {$last: "$patientDoc"},
                         registerDate: {$last: "$registerDate"},
+                        patientId: {$last: "$patientId"},
+                        depositDoc: {$last: "$depositDoc"},
+                        totalDeposit: {$last: '$totalDeposit'},
+                        items: {$last: "$items"},
+                        paymentDoc: {$addToSet: "$paymentDoc"},
+                        patientDoc: {$last: "$patientDoc"},
+                        totalPayment: {$sum: '$paymentDoc.amount'},
                         des: {$last: "$des"},
                         branchId: {$last: "$branchId"},
                         subTotal: {$last: "$subTotal"},
-                        subDiscount: {$last: "$subDiscount"},
-                        total: {$last: "$total"},
+                        total: {$last: "$total"}
+
+                    }
+                },
+                {
+                    $unwind: {path: '$items', preserveNullAndEmptyArrays: true}
+                },
+                {
+                    $lookup: {
+                        from: "dental_diseaseItems",
+                        localField: "items.itemId",
+                        foreignField: "_id",
+                        as: "itemDoc"
+                    }
+                },
+                {
+                    $unwind: "$itemDoc"
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        registerDate: {$last: "$registerDate"},
+                        patientId: {$last: "$patientId"},
+                        depositDoc: {$last: "$depositDoc"},
+                        totalDeposit: {$last: '$totalDeposit'},
                         items: {
                             $addToSet: {
                                 itemId: "$items.itemId",
@@ -75,7 +125,15 @@ export const registerInvoiceReport = new ValidatedMethod({
                                 discount: "$items.discount",
                                 amount: "$items.amount"
                             }
-                        }
+                        },
+                        paymentDoc: {$addToSet: "$paymentDoc"},
+                        patientDoc: {$last: "$patientDoc"},
+                        totalPayment: {$last: '$totalPayment'},
+                        des: {$last: "$des"},
+                        branchId: {$last: "$branchId"},
+                        subTotal: {$last: "$subTotal"},
+                        total: {$last: "$total"}
+
                     }
                 }
             ])[0];

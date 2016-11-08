@@ -57,7 +57,7 @@ Deposit.itemsSchema = new SimpleSchema({
         type: Number,
         label: "Paid Amount",
         decimal: true,
-        min: 1,
+        min: 0,
         autoform: {
             type: 'inputmask',
             inputmaskOptions: function () {

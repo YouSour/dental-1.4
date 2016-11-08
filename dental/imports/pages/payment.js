@@ -91,6 +91,7 @@ indexTmpl.helpers({
         let registerCollection = Register.find();
         let depositCollection = Deposit.find();
         let paymentCollection = Payment.find();
+
         let totalAmount = 0, totalPayment = 0, totalBalance = 0, totalDeposit = 0, statusClosedCount = 0, statusActiveCount = 0;
 
         depositCollection.forEach(function (obj) {
@@ -137,23 +138,22 @@ indexTmpl.events({
         alertify.payment(fa('plus', 'Payment'), renderTemplate(formTmpl)).maximize();
     },
     'click .js-update' (event, instance) {
-        let lastPaymentId = paymentDoc.get().payment._id;
-        if (lastPaymentId == this._id) {
+
+        if (lastPayment(this._id)){
             let dataUpdate = this;
             alertify.payment(fa('pencil', 'Payment'), renderTemplate(editTmpl, dataUpdate));
         } else {
             swal({
                 title: "Warning",
                 type: "warning",
-                text: "You can update the last record only !",
+                text: "You can edit the last record only !",
                 timer: 1800,
                 showConfirmButton: false
             });
         }
     },
     'click .js-destroy' (event, instance) {
-        let lastPaymentId = paymentDoc.get().payment._id;
-        if (lastPaymentId == this._id) {
+        if (lastPayment(this._id)) {
             destroyAction(
                 Payment,
                 {_id: this._id},
@@ -163,7 +163,7 @@ indexTmpl.events({
             swal({
                 title: "Warning",
                 type: "warning",
-                text: "You can update the last record only !",
+                text: "You can delete the last record only !",
                 timer: 1800,
                 showConfirmButton: false
             });
@@ -463,3 +463,10 @@ let hooksObject = {
 };
 
 AutoForm.addHooks(['Dental_paymentForm', 'Dental_paymentEditForm'], hooksObject);
+
+function lastPayment(id) {
+    let lastPaymentDoc = Payment.findOne({}, {sort: {_id: -1}});
+    if (lastPaymentDoc._id == id) {
+        return true;
+    }
+}

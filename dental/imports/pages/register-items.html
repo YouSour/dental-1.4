@@ -13,22 +13,14 @@
             <div class="pull-right">Sub Total:</div>
         </div>
         <div class="col-sm-3">
-            {{> afQuickField name="subTotal" value=subTotal label=false readonly="true"}}
+            {{> afQuickField name="subTotal" value=total label=false readonly="true"}}
         </div>
-
-        <!--<div class="col-sm-1">-->
-            <!--<div class="pull-right">Sub Discount:</div>-->
-        <!--</div>-->
-        <!--<div class="col-sm-3">-->
-            <!--{{> afQuickField name="subDiscount" label=false}}-->
-        <!--</div>-->
 
         <div class="col-sm-1">
             <div class="pull-right">Credit:</div>
         </div>
         <div class="col-sm-3">
-            {{> afQuickField name="credit" label=false readonly="true"}}
-            {{> afQuickField name="totalDeposit" value=totalDeposit label=false readonly="true"}}
+            {{> afQuickField name="credit" value=total label=false readonly="true"}}
         </div>
 
         <div class="col-sm-1">

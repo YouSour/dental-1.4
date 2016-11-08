@@ -1,0 +1,119 @@
+<!--Report-->
+<template name="Dental_diseaseReport">
+    <div class="box-body">
+        {{#if subsReady}}
+            <!--Form-->
+            {{#autoForm schema=schema id="Dental_diseaseReport" resetOnSuccess=false type="normal"}}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{> afQuickField name="branchId"}}
+                    </div>
+                    <div class="col-md-6">
+                        {{> afQuickField name="repDate"}}
+                        {{> reportFormFooterWithButton}}
+                    </div>
+                </div>
+
+            {{/autoForm}}
+        {{else}}
+            {{> loading}}
+        {{/if}}
+
+
+        <!--Report Paper-->
+        <div class="rpt rpt-portrait-a4">
+            {{#if rptInit}}
+                {{#if rptData}}
+
+                    <!--Print Button-->
+                    <hr>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-success btn-print-area">
+                            <i class="fa fa-print"></i> Print
+                        </button>
+                    </div>
+                    <!--Print Button-->
+
+                    <div id="print-data">
+
+                        {{#with rptData}}
+
+                            <!--Title-->
+                            {{#with rptTitle}}
+                                <div class="rpt-title">
+                                    <div class="rpt-title-3x rpt-kh-muol">{{khName}}</div>
+                                    <div class="rpt-title-3x">{{enName}}</div>
+                                    <div class="rpt-title-2x"><u>Disease Report</u></div>
+                                    <div>{{enAddress}}</div>
+                                </div>
+                            {{/with}}
+
+                            <!--Header-->
+                            {{#with rptHeader}}
+                                <div style="width: 100%">
+                                    <div style="width: 50%; float: left">
+                                        <div><strong>Branch:</strong> {{branchHeader}}</div>
+                                    </div>
+
+                                    <div style="width: 50%; float: right">
+                                        <div><strong>Date:</strong>
+                                            {{moFormat repDate.[0] "DD/MM/YYYY"}}
+                                            -
+                                            {{moFormat repDate.[1] "DD/MM/YYYY"}}
+                                        </div>
+                                    </div>
+                                </div>
+                            {{/with}}
+
+                            <!--Content-->
+                            <table class="rpt rpt-content">
+                                <thead class="rpt-content-header">
+                                <tr>
+                                    <th>N<sup>o</sup></th>
+                                    <th>ID</th>
+                                    <th>Disease</th>
+                                    <th>Number</th>
+                                </tr>
+                                </thead>
+
+                                <tbody class="rpt-content-body">
+                                {{#each rptContent.data}}
+                                    <tr style="vertical-align: top">
+                                        <td>{{increaseIndex @index}}</td>
+                                        <td>{{_id}}</td>
+                                        <td>{{disease}}</td>
+                                        <td class="text-right">{{number}}</td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+
+                                <tfoot class="rpt-content-footer">
+                                <tr>
+                                    <td class="text-right" colspan="3">Total:</td>
+                                    <td class="text-right">{{rptContent.total}}</td>
+                                </tr>
+                                </tfoot>
+                            </table>
+
+                        {{/with}}
+
+                        <!--&lt;!&ndash;Sign&ndash;&gt;-->
+                        <!--{{> ReportSignFooter classSize="rpt-2x"}}-->
+                        {{> ReportSignFooter}}
+
+                        <!--Auto print-->
+                        <!--{{autoprint close="true"}}-->
+
+                    </div>
+                {{else}}
+                    <div class="text-center">
+                        {{> iconLoading size="fa-5x"}}
+                    </div>
+                {{/if}}
+            {{/if}}
+        </div>
+        <!--/Report Paper-->
+
+    </div>
+    <!-- /.box-body -->
+</template>
