@@ -7,6 +7,7 @@ import {Branch} from '../../../core/common/collections/branch.js';
 import {CaseHistory} from '../../common/collections/case-history.js';
 import {DiseaseCategories} from '../../common/collections/disease-categories.js';
 import {Register} from '../../common/collections/register.js';
+import {Staff} from '../../common/collections/staff.js';
 
 export const SelectOpts = {
     branch: function (selectOne) {
@@ -72,5 +73,28 @@ export const SelectOpts = {
             });
 
         return list;
-    }
+    },
+    staff: function (all) {
+        let list = [];
+
+        if (all) {
+            list.push({label: "All", value: ""});
+        }
+
+        Staff.find().forEach(function (obj) {
+            list.push({label: obj._id + " : " + obj.name, value: obj._id});
+        });
+
+        return list;
+    },
+    condition: function (all) {
+        let list = [];
+        if (all) {
+            list.push({label: "All", value: ""});
+        }
+        list.push({label: "Partial", value: "Partial"});
+        list.push({label: "Closed", value: "Closed"});
+
+        return list;
+    },
 };

@@ -76,12 +76,16 @@
 
                         <tfoot class="rpt-content-footer">
                         <tr>
-                            <td colspan="5" class="text-right">Sub Total:</td>
+                            <td colspan="3" class="text-right">Sub Total:</td>
                             <td class="text-right">{{numFormat subTotal "0,0.00"}}</td>
+                            <td  class="text-right">Deposit:</td>
+                            <td class="text-right">{{numFormat totalDeposit "0,0.00"}}</td>
                         </tr>
                         <tr>
-                            <td colspan="5" class="text-right">Sub Discount ($) :</td>
-                            <td class="text-right">{{numFormat subDiscount "0,0.00"}}</td>
+                            <td colspan="3" class="text-right">Paid:</td>
+                            <td class="text-right">{{numFormat totalPayment "0,0.00"}}</td>
+                            <td class="text-right">Credit:</td>
+                            <td class="text-right">{{numFormat credit "0,0.00"}}</td>
                         </tr>
                         <tr>
                             <td colspan="5" class="text-right">Total:</td>
@@ -90,25 +94,43 @@
                         </tfoot>
                     </table>
 
+                    <!--Sign-->
+                    <div style="width: 100%">
+                        <div style="width: 50%; float: left">
+                            <table class="rpt rpt-content">
+                                <thead class="rpt-content-header">
+                                <tr>
+                                    <th>Deposit Date</th>
+                                    <th>Amount</th>
+                                </tr>
+                                </thead>
+
+                                <tbody class="rpt-content-body">
+
+                                {{#each deposit in depositDoc}}
+                                    <tr>
+                                        <td>{{moFormat deposit.paidDate "DD-MM-YYYY"}}</td>
+                                        <td>{{numFormat deposit.amount "0,0.00"}}</td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="text-align:center; width: 50%; float: right">
+                            Date:................................<br>
+                            <div style="margin-bottom: 7em">
+                                <strong>Cashier</strong>
+                            </div>
+                            __________________
+                        </div>
+                    </div>
+
                 {{/with}}
                 <!--/Report data-->
 
             {{/with}}
             <!--/Report init-->
 
-            <!--Sign-->
-            <div style="width: 100%">
-                <div style="width: 50%; float: left">
-
-                </div>
-                <div style="text-align:center; width: 50%; float: right">
-                    Date:................................<br>
-                    <div style="margin-bottom: 7em">
-                        <strong>Cashier</strong>
-                    </div>
-                    __________________
-                </div>
-            </div>
 
             <!--Auto print-->
             <!--{{autoprint close="true"}}-->

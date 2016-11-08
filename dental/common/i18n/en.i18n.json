@@ -10,6 +10,8 @@
       "diseaseCategories": "Categories",
       "diseaseItems": "Items",
       "laboratoryItems": "Items",
+      "deposit": "Deposit",
+      "payment": "Payment",
       "order": "Order",
       "register": "Register",
       "invoice": "Invoice"

@@ -68,6 +68,74 @@ DentalRoutes.route('/order-report', {
     }
 });
 
+// Deposit
+import '../imports/reports/deposit.js';
+DentalRoutes.route('/deposit-report', {
+    name: 'dental.depositReport',
+    title: 'Deposit Report',
+    action: function (params, queryParams) {
+        Layout.main('Dental_depositReport');
+    },
+    breadcrumb: {
+        //params: ['id'],
+        //queryParams: ['show', 'color'],
+        title: 'Deposit Report',
+        // icon: 'users',
+        parent: 'dental.home'
+    }
+});
+
+// Payment
+import '../imports/reports/payment.js';
+DentalRoutes.route('/payment-report', {
+    name: 'dental.paymentReport',
+    title: 'Payment Report',
+    action: function (params, queryParams) {
+        Layout.main('Dental_paymentReport');
+    },
+    breadcrumb: {
+        //params: ['id'],
+        //queryParams: ['show', 'color'],
+        title: 'Payment Report',
+        // icon: 'users',
+        parent: 'dental.home'
+    }
+});
+
+// disease
+import '../imports/summary_reports/disease.js';
+DentalRoutes.route('/disease-report', {
+    name: 'dental.diseaseReport',
+    title: 'Disease Report',
+    action: function (params, queryParams) {
+        Layout.main('Dental_diseaseReport');
+    },
+    breadcrumb: {
+        //params: ['id'],
+        //queryParams: ['show', 'color'],
+        title: 'Disease Report',
+        // icon: 'users',
+        parent: 'dental.home'
+    }
+});
+
+// analysis patient
+import '../imports/summary_reports/analysis-patient.js';
+DentalRoutes.route('/analysis-patient-report', {
+    name: 'dental.analysisPatientReport',
+    title: 'Analysis Patient Report',
+    action: function (params, queryParams) {
+        Layout.main('Dental_analysisPatientReport');
+    },
+    breadcrumb: {
+        //params: ['id'],
+        //queryParams: ['show', 'color'],
+        title: 'Analysis Patient Report',
+        // icon: 'users',
+        parent: 'dental.home'
+    }
+});
+
 // Register Invoice
 import '../imports/reports/register-invoice.js';
 DentalRoutes.route('/register-invoice-report', {

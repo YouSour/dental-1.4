@@ -47,18 +47,12 @@ let indexTmpl = Template.Dental_depositItems,
 // Local collection
 var depositItemsCollection;
 
-//Reactive Var
-//get deposit doc for patient paid next time
-let myData = new ReactiveVar();
-
-// Variable
-let laboName, doctorName;
-
-
 // Index
 indexTmpl.onCreated(function () {
     // Create new  alertify
     createNewAlertify('item', {size: 'lg'});
+
+    this.subDiscount = new ReactiveVar(0);
 
     // Data context
     let data;
@@ -83,10 +77,6 @@ indexTmpl.helpers({
                 key: 'amount',
                 label: 'Amount',
                 fn (value, object, key) {
-                    let update = Session.get('edit');
-                    // if(update == "edit"){
-                    //     value = object.paidAmount + object.balance;
-                    // }
                     return value;
                 }
             },
@@ -187,114 +177,5 @@ indexTmpl.events({
             totalBalance += obj.balance;
         });
         $('[name="totalBalance"]').val(totalBalance);
-    },
-    // 'blur .paidAmount': function (event, instance) {
-    //
-    //     let $parents = $(event.currentTarget).parents('tr');
-    //
-    //     let itemId = $parents.find('.itemId').text();
-    //     let amount = $parents.find('.amount').text();
-    //     let laboAmount = $parents.find('.laboAmount').text();
-    //     let doctorAmount = $parents.find('.doctorAmount').text();
-    //     let paidAmount = $parents.find('.paid').val();
-    //     amount = _.isEmpty(amount) ? 0 : parseFloat(amount);
-    //     paidAmount = _.isEmpty(paidAmount) ? 0 : parseFloat(paidAmount);
-    //     let balance = math.round(amount - paidAmount, 2);
-    //
-    //     // Update
-    //     depositItemsCollection.update(
-    //         {_id: itemId},
-    //         {$set: {paidAmount: paidAmount, balance: balance}}
-    //     );
-    //     console.log(depositItemsCollection.find().fetch());
-    // }
+    }
 });
-
-// // New
-// newTmpl.onCreated(function () {
-//     // State
-//     this.itemId = new ReactiveVar();
-//     this.date = new ReactiveVar();
-//     FlowerRouter.set({d: 'new'});
-// });
-
-// newTmpl.helpers({
-// schema(){
-//     return DepositItemsSchema;
-// }
-// });
-
-// newTmpl.events({
-
-// });
-
-// Edit
-// editTmpl.onCreated(function () {
-
-// });
-
-// editTmpl.helpers({
-
-// });
-
-// editTmpl.events({
-
-// });
-
-// let hooksObject = {
-//     onSubmit: function (insertDoc, updateDoc, currentDoc) {
-//         this.event.preventDefault();
-
-// Check old item
-// if (insertDoc.itemId == currentDoc.itemId) {
-//     depositItemsCollection.update(
-//         {_id: currentDoc.itemId},
-//         updateDoc
-//     );
-// } else {
-//     depositItemsCollection.remove({_id: currentDoc.itemId});
-//
-//     // Check exist item
-//     let exist = depositItemsCollection.findOne({_id: insertDoc.itemId});
-//
-//     if (exist) {
-//
-//         let newQty = exist.qty + insertDoc.qty;
-//         let newPrice = insertDoc.price;
-//         let newAmount = math.round(newQty * newPrice, 2);
-//
-//         depositItemsCollection.update(
-//             {_id: insertDoc.itemId},
-//             {
-//                 $set: {
-//                     qty: newQty,
-//                     price: newPrice,
-//                     amount: newAmount
-//                 }
-//             }
-//         );
-//     } else {
-//         let itemName = _.split($('[name="itemId"] option:selected').text(), " : ")[1];
-//         depositItemsCollection.insert({
-//             _id: insertDoc.itemId,
-//             itemId: insertDoc.itemId,
-//             itemName: itemName,
-//             date: insertDoc.date,
-//             qty: insertDoc.qty,
-//             price: insertDoc.price,
-//             amount: insertDoc.amount,
-//         });
-//     }
-// }
-//
-// this.done();
-//     },
-//     onSuccess: function (formType, result) {
-//         alertify.item().close();
-//         displaySuccess();
-//     },
-//     onError: function (formType, error) {
-//         displayError(error.message);
-//     }
-// };
-// AutoForm.addHooks(['Dental_depositItemsEdit'], hooksObject);

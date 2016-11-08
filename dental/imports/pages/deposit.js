@@ -130,23 +130,21 @@ indexTmpl.events({
         alertify.deposit(fa('plus', 'Deposit'), renderTemplate(formTmpl)).maximize();
     },
     'click .js-update' (event, instance) {
-        let lastDepositId = depositDoc.get().deposit._id;
-        if (lastDepositId == this._id) {
+        if (lastDeposit(this._id)) {
             let dataUpdate = this;
             alertify.deposit(fa('pencil', 'Deposit'), renderTemplate(editTmpl, dataUpdate));
         } else {
             swal({
                 title: "Warning",
                 type: "warning",
-                text: "You can update the last record only !",
+                text: "You can edit the last record only !",
                 timer: 1800,
                 showConfirmButton: false
             });
         }
     },
     'click .js-destroy' (event, instance) {
-        let lastDepositId = depositDoc.get().deposit._id;
-        if (lastDepositId == this._id) {
+        if (lastDeposit(this._id)) {
             destroyAction(
                 Deposit,
                 {_id: this._id},
@@ -156,7 +154,7 @@ indexTmpl.events({
             swal({
                 title: "Warning",
                 type: "warning",
-                text: "You can update the last record only !",
+                text: "You can delete the last record only !",
                 timer: 1800,
                 showConfirmButton: false
             });
@@ -464,3 +462,10 @@ let hooksObject = {
 };
 
 AutoForm.addHooks(['Dental_depositForm', 'Dental_depositEditForm'], hooksObject);
+
+function lastDeposit(id) {
+    let lastDepositDoc = Deposit.findOne({}, {sort: {_id: -1}});
+    if (lastDepositDoc._id == id) {
+        return true;
+    }
+}

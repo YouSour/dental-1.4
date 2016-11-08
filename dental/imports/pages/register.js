@@ -1,6 +1,6 @@
 import {Template} from 'meteor/templating';
 import {AutoForm} from 'meteor/aldeed:autoform';
-import {Roles} from  'meteor/alanning:roles';
+import {Roles} from 'meteor/alanning:roles';
 import {alertify} from 'meteor/ovcharik:alertifyjs';
 import {sAlert} from 'meteor/juliancwirko:s-alert';
 import {fa} from 'meteor/theara:fa-helpers';
@@ -12,11 +12,22 @@ import 'meteor/tap:i18n-ui';
 
 
 // Lib
-import {createNewAlertify} from '../../../core/client/libs/create-new-alertify.js';
-import {renderTemplate} from '../../../core/client/libs/render-template.js';
-import {destroyAction} from '../../../core/client/libs/destroy-action.js';
-import {displaySuccess, displayError} from '../../../core/client/libs/display-alert.js';
-import {__} from '../../../core/common/libs/tapi18n-callback-helper.js';
+import {
+    createNewAlertify
+} from '../../../core/client/libs/create-new-alertify.js';
+import {
+    renderTemplate
+} from '../../../core/client/libs/render-template.js';
+import {
+    destroyAction
+} from '../../../core/client/libs/destroy-action.js';
+import {
+    displaySuccess,
+    displayError
+} from '../../../core/client/libs/display-alert.js';
+import {
+    __
+} from '../../../core/common/libs/tapi18n-callback-helper.js';
 
 // Component
 import '../../../core/client/components/loading.js';
@@ -24,14 +35,22 @@ import '../../../core/client/components/column-action.js';
 import '../../../core/client/components/form-footer.js';
 
 // Method
-import {lookupRegister} from '../../common/methods/lookup-register';
-import {lookupPatient} from '../../common/methods/lookup-patient.js';
+import {
+    lookupRegister
+} from '../../common/methods/lookup-register';
+import {
+    lookupPatient
+} from '../../common/methods/lookup-patient.js';
 
 // Collection
-import {Register} from '../../common/collections/register.js';
+import {
+    Register
+} from '../../common/collections/register.js';
 
 // Tabular
-import {RegisterTabular} from '../../common/tabulars/register.js';
+import {
+    RegisterTabular
+} from '../../common/tabulars/register.js';
 
 // Page
 import './register.html';
@@ -46,28 +65,35 @@ let indexTmpl = Template.Dental_register,
     statusLinkActionTmpl = Template.Dental_statusLinkAction,
     depositAndPaymentLinkActionTmpl = Template.Dental_depositAndPaymentLinkAction,
     showTmpl = Template.Dental_registerShow;
+
 // Local collection
 let registerItemsCollection = new Mongo.Collection(null);
 
 // Index
 indexTmpl.onCreated(function () {
     // Create new  alertify
-    createNewAlertify('register', {size: 'lg'});
-    createNewAlertify('registerClosedDate', {size: 'sm'});
+    createNewAlertify('register', {
+        size: 'lg'
+    });
+    createNewAlertify('registerClosedDate', {
+        size: 'sm'
+    });
     createNewAlertify('registerShow');
 });
 
 indexTmpl.helpers({
-    tabularTable(){
+    tabularTable() {
         return RegisterTabular;
     },
     selector() {
-        return {branchId: Session.get('currentBranch')};
+        return {
+            branchId: Session.get('currentBranch')
+        };
     }
 });
 
 indexTmpl.events({
-    'click .btn-link' (event, instance){
+    'click .btn-link' (event, instance) {
         checkClosedRegister(this.closedDate);
     },
     'click .js-create' (event, instance) {
@@ -77,7 +103,9 @@ indexTmpl.events({
         Session.set('update', true);
         let self = this;
         if (self.depositStatus !== "exist") {
-            alertify.register(fa('pencil', 'Register'), renderTemplate(formTmpl, {registerId: this._id})).maximize();
+            alertify.register(fa('pencil', 'Register'), renderTemplate(formTmpl, {
+                registerId: this._id
+            })).maximize();
         } else {
             swal({
                 title: "Warning",
@@ -90,12 +118,15 @@ indexTmpl.events({
     },
     'click .js-destroy' (event, instance) {
         destroyAction(
-            Register,
-            {_id: this._id},
-            {title: 'Register', itemTitle: this._id}
+            Register, {
+                _id: this._id
+            }, {
+                title: 'Register',
+                itemTitle: this._id
+            }
         );
     },
-    'click .js-status' (event, instance){
+    'click .js-status' (event, instance) {
         let self = this;
         Session.set('SetActiveDate', true);
         if (_.isUndefined(this.closedDate)) {
@@ -119,7 +150,11 @@ indexTmpl.events({
                 closeOnConfirm: false
             }).then(function () {
                 //Reactive record
-                Register.update(self._id, {$set: {closedDate: ''}});
+                Register.update(self._id, {
+                    $set: {
+                        closedDate: ''
+                    }
+                });
 
                 swal({
                     title: "Reactive",
@@ -134,9 +169,11 @@ indexTmpl.events({
             }).done();
         }
     },
-    'click .js-deposit' (event, instance){
+    'click .js-deposit' (event, instance) {
         if (!this.closedDate) {
-            let params = {registerId: this._id};
+            let params = {
+                registerId: this._id
+            };
             FlowRouter.go("dental.deposit", params);
         } else {
             swal({
@@ -148,14 +185,21 @@ indexTmpl.events({
             });
         }
     },
-    'click .js-quickDeposit' (event, instance){
-        let params = {registerId: undefined};
-        let queryParams = {d: 'new', quickDeposit: 'new'};
+    'click .js-quickDeposit' (event, instance) {
+        let params = {
+            registerId: undefined
+        };
+        let queryParams = {
+            d: 'new',
+            quickDeposit: 'new'
+        };
         FlowRouter.go("dental.deposit", params, queryParams);
     },
-    'click .js-payment'(event, instance){
+    'click .js-payment' (event, instance) {
         if (this.closedDate) {
-            let params = {registerId: this._id};
+            let params = {
+                registerId: this._id
+            };
             FlowRouter.go("dental.payment", params);
         } else {
             swal({
@@ -167,17 +211,26 @@ indexTmpl.events({
             });
         }
     },
-    'click .js-quickPayment' (event, instance){
-        let params = {registerId: undefined};
-        let queryParams = {d: 'new', quickPayment: 'new'};
+    'click .js-quickPayment' (event, instance) {
+        let params = {
+            registerId: undefined
+        };
+        let queryParams = {
+            d: 'new',
+            quickPayment: 'new'
+        };
         FlowRouter.go("dental.payment", params, queryParams);
     },
     'click .js-display' (event, instance) {
-        alertify.registerShow(fa('eye', 'Register'), renderTemplate(showTmpl, {registerId: this._id}));
+        alertify.registerShow(fa('eye', 'Register'), renderTemplate(showTmpl, {
+            registerId: this._id
+        }));
     },
     'click .js-invoice' (event, instance) {
         let params = {};
-        let queryParams = {registerId: this._id};
+        let queryParams = {
+            registerId: this._id
+        };
         let path = FlowRouter.path("dental.registerInvoiceReportGe", params, queryParams);
 
         window.open(path, '_blank');
@@ -187,14 +240,14 @@ indexTmpl.events({
 let patientDoc = new ReactiveVar();
 let patientId = new ReactiveVar();
 
-Tracker.autorun(()=> {
+Tracker.autorun(() => {
     // lookup Patient
     if (patientId.get()) {
         lookupPatient.callPromise({
             patientId: patientId.get()
-        }).then((result)=> {
+        }).then((result) => {
             patientDoc.set(result);
-        }).catch((err)=> {
+        }).catch((err) => {
             console.log(err);
         });
         Session.set('patientVarDoc', patientDoc.get());
@@ -207,22 +260,22 @@ formTmpl.onCreated(function () {
     self.isLoading = new ReactiveVar(false);
     self.registerDoc = new ReactiveVar();
 
-    self.autorun(()=> {
+    self.autorun(() => {
         let currentData = Template.currentData();
         if (currentData) {
             self.isLoading.set(true);
 
             lookupRegister.callPromise({
                 registerId: currentData.registerId
-            }).then((result)=> {
+            }).then((result) => {
                 // Add items to local collection
-                _.forEach(result.items, (value)=> {
+                _.forEach(result.items, (value) => {
                     registerItemsCollection.insert(value);
                 });
 
                 self.registerDoc.set(result);
                 self.isLoading.set(false);
-            }).catch((err)=> {
+            }).catch((err) => {
                 console.log(err);
             });
         }
@@ -232,13 +285,14 @@ formTmpl.onCreated(function () {
 
 
 formTmpl.helpers({
-    collection(){
+    collection() {
         return Register;
     },
-    isLoading(){
+    isLoading() {
         return Template.instance().isLoading.get();
     },
-    data () {
+    data() {
+        let registerDoc = Template.instance().registerDoc.get();
         let data = {
             formType: 'insert',
             doc: {}
@@ -246,28 +300,32 @@ formTmpl.helpers({
         let currentData = Template.currentData();
         if (currentData) {
             //set patientId on update form
-            let patient = Template.instance().registerDoc.get().patientId;
+            let patient = registerDoc.patientId;
             patientId.set(patient);
             Session.set('patientVar', patient);
 
             data.formType = 'update';
-            data.doc = Template.instance().registerDoc.get();
+            registerDoc.credit = registerDoc.subTotal - (registerDoc.totalDeposit + registerDoc.totalPaid);
+            data.doc = registerDoc;
+
         }
 
         return data;
     },
-    registerItemsCollection(){
+    registerItemsCollection() {
         return registerItemsCollection;
     },
     disabledSubmitBtn: function () {
         let count = registerItemsCollection.find().count();
         if (count == 0) {
-            return {disabled: true};
+            return {
+                disabled: true
+            };
         }
 
         return {};
     },
-    checkMember(){
+    checkMember() {
         let patient = patientDoc.get();
 
         let result = {
@@ -295,7 +353,7 @@ formTmpl.helpers({
 });
 
 statusLinkActionTmpl.helpers({
-    status(){
+    status() {
         let result = {
             btnColor: 'success',
             icon: fa("check-square", "Active")
@@ -312,7 +370,7 @@ statusLinkActionTmpl.helpers({
 });
 
 depositAndPaymentLinkActionTmpl.helpers({
-    checkDP(){
+    checkDP() {
         let result;
         if (_.isUndefined(this.closedDate)) {
             result = '';
@@ -322,10 +380,10 @@ depositAndPaymentLinkActionTmpl.helpers({
 });
 
 statusActionTmpl.helpers({
-    collection(){
+    collection() {
         return Register;
     },
-    data () {
+    data() {
         let data = {
             formType: 'insert',
             doc: {}
@@ -340,13 +398,13 @@ statusActionTmpl.helpers({
 
         return data;
     },
-    todayDate(){
+    todayDate() {
         return moment().toDate();
     }
 });
 
 formTmpl.events({
-    'change [name="patientId"]'(event, instance){
+    'change [name="patientId"]' (event, instance) {
         let patient = event.currentTarget.value;
         Session.set('patientVar', patient);
 
@@ -380,26 +438,26 @@ showTmpl.onCreated(function () {
     this.isLoading = new ReactiveVar(true);
     this.registerDoc = new ReactiveVar();
 
-    this.autorun(()=> {
+    this.autorun(() => {
         let currentData = Template.currentData();
         lookupRegister.callPromise({
             registerId: currentData.registerId
-        }).then((result)=> {
+        }).then((result) => {
             console.log('result: ', result);
 
             this.registerDoc.set(result);
             this.isLoading.set(false);
-        }).catch((err)=> {
+        }).catch((err) => {
             console.log(err);
         });
     });
 });
 
 showTmpl.helpers({
-    isLoading(){
+    isLoading() {
         return Template.instance().isLoading.get();
     },
-    data () {
+    data() {
         let data = Template.instance().registerDoc.get();
         _.forEach(data.items, function (obj) {
             obj.date = moment(obj.date).format('DD/MM/YYYY');
@@ -407,7 +465,9 @@ showTmpl.helpers({
 
         // Use jsonview
         if (data) {
-            data.jsonViewOpts = {collapsed: true};
+            data.jsonViewOpts = {
+                collapsed: true
+            };
         }
 
         return data;
@@ -432,7 +492,7 @@ let hooksObject = {
             return doc;
         }
     },
-    onSuccess (formType, result) {
+    onSuccess(formType, result) {
         if (formType == 'update') {
             alertify.register().close();
         }
@@ -445,10 +505,10 @@ let hooksObject = {
 
         displaySuccess();
     },
-    onError (formType, error) {
+    onError(formType, error) {
         displayError(error.message);
     },
-    onSuccess (statusActionTmpl, result) {
+    onSuccess(statusActionTmpl, result) {
         if (statusActionTmpl == 'update') {
             alertify.registerClosedDate().close();
         }
@@ -456,7 +516,7 @@ let hooksObject = {
         $('[name="closedDate"]').val(null);
         displaySuccess();
     },
-    onError (formType, error) {
+    onError(formType, error) {
         displayError(error.message);
     }
 };

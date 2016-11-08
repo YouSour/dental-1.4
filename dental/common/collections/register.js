@@ -1,12 +1,26 @@
-import {Meteor} from 'meteor/meteor';
-import {Mongo} from 'meteor/mongo';
-import {SimpleSchema} from 'meteor/aldeed:simple-schema';
-import {AutoForm} from 'meteor/aldeed:autoform';
-import {moment} from 'meteor/momentjs:moment';
+import {
+    Meteor
+} from 'meteor/meteor';
+import {
+    Mongo
+} from 'meteor/mongo';
+import {
+    SimpleSchema
+} from 'meteor/aldeed:simple-schema';
+import {
+    AutoForm
+} from 'meteor/aldeed:autoform';
+import {
+    moment
+} from 'meteor/momentjs:moment';
 
 // Lib
-import {__} from '../../../core/common/libs/tapi18n-callback-helper.js';
-import {SelectOpts} from '../../imports/libs/select-opts.js';
+import {
+    __
+} from '../../../core/common/libs/tapi18n-callback-helper.js';
+import {
+    SelectOpts
+} from '../../imports/libs/select-opts.js';
 
 export const Register = new Mongo.Collection("dental_register");
 
@@ -148,7 +162,9 @@ Register.schema = new SimpleSchema({
                 optionsMethodParams: function () {
                     if (Meteor.isClient) {
                         let currentBranch = Session.get('currentBranch');
-                        return {branchId: currentBranch};
+                        return {
+                            branchId: currentBranch
+                        };
                     }
                 }
             }
@@ -163,9 +179,9 @@ Register.schema = new SimpleSchema({
                 type: 'summernote',
                 class: 'editor', // optional
                 settings: {
-                    height: 56,                 // set editor height
-                    minHeight: null,             // set minimum height of editor
-                    maxHeight: null,             // set maximum height of editor
+                    height: 56, // set editor height
+                    minHeight: null, // set minimum height of editor
+                    maxHeight: null, // set maximum height of editor
                     toolbar: [
                         ['font', ['bold', 'italic', 'underline', 'clear']], //['font', ['bold', 'italic', 'underline', 'clear']],
                         ['para', ['ul', 'ol']] //['para', ['ul', 'ol', 'paragraph']],
@@ -181,39 +197,6 @@ Register.schema = new SimpleSchema({
     subTotal: {
         type: Number,
         label: 'Total',
-        decimal: true,
-        autoform: {
-            type: 'inputmask',
-            inputmaskOptions: function () {
-                return inputmaskOptions.currency();
-            }
-        }
-    },
-    subDiscount: {
-        type: Number,
-        label: 'Sub Total',
-        decimal: true,
-        autoform: {
-            type: 'inputmask',
-            inputmaskOptions: function () {
-                return inputmaskOptions.currency();
-            }
-        }
-    },
-    totalDeposit: {
-        type: Number,
-        label: 'Credit',
-        decimal: true,
-        autoform: {
-            type: 'inputmask',
-            inputmaskOptions: function () {
-                return inputmaskOptions.currency();
-            }
-        }
-    },
-    credit: {
-        type: Number,
-        label: 'Credit',
         decimal: true,
         autoform: {
             type: 'inputmask',

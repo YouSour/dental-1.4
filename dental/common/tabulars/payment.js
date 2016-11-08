@@ -32,6 +32,15 @@ tabularOpts.columns = [
     {data: 'items', title: 'Items', tmpl: Meteor.isClient && Template.Dental_paymentItem},
     {data: "amount", title: "Total Amount"},
     {data: "totalBalance", title: "Total Balance"},
+    {
+        data: "condition", title: "Condition",
+        render(val, type, doc){
+            if (val == "Partial") {
+                return `<span class="badge bg-orange-active"><i class="fa fa-heart-o"></i> ${val} </span>`;
+            }
+            return `<span class="badge bg-teal-active"><i class="fa fa-heart"></i> ${val} </span>`;
+        }
+    },
 ];
-tabularOpts.extraFields = ['registerId','patientId'];
+tabularOpts.extraFields = ['registerId', 'patientId', 'staffId'];
 export const PaymentTabular = new Tabular.Table(tabularOpts);

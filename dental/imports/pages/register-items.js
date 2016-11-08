@@ -160,14 +160,6 @@ indexTmpl.helpers({
 
         return reactiveTableSettings;
     },
-    subTotal: function () {
-        let subTotal = 0;
-        let getItems = registerItemsCollection.find();
-        getItems.forEach((obj)=> {
-            subTotal += obj.amount;
-        });
-        return subTotal;
-    },
     total: function () {
         if (!Session.get('update')) {
             let total = 0;
@@ -227,10 +219,7 @@ indexTmpl.events({
         let subDiscount = $('[name="subDiscount"]').val();
         $('[name="total"]').val(subTotal - subDiscount);
 
-        registerItemsCollection.update(
-            {_id: itemId},
-            {$set: {qty: qty, price: price, amount: amount}}
-        );
+        console.log (registerItemsCollection.find().count());
     }
 });
 
