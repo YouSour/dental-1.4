@@ -28,7 +28,7 @@ Patient.generalSchema = new SimpleSchema({
         }
     },
     age: {
-        type: String,
+        type: Number,
         label: 'Age'
     },
     occupation: {

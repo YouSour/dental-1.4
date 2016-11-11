@@ -46,6 +46,45 @@ export const analysisPatientReport = new ValidatedMethod({
                 {
                     $match: selector,
                 },
+                {
+                    $lookup: {
+                        from: "dental_patient",
+                        localField: "patientId",
+                        foreignField: "_id",
+                        as: "patientDoc"
+                    }
+                },
+                {$unwind: {path: '$patientDoc', preserveNullAndEmptyArrays: true}},
+                {
+                    $project: {
+                        _id: 1,
+                        items: 1,
+                        patientDoc: 1,
+                        ageStatus: {
+                            $cond: {
+                                if: {$lte: ["$patientDoc.age", 13]},
+                                then: 'Children (1 - 13)',
+                                else: {
+                                    $cond: {
+                                        if: {$and: [{$lte: ["$patientDoc.age", 30]}, {$gte: ["$patientDoc.age", 14]}]},
+                                        then: 'Adult (14 - 30)',
+                                        else: "Old (31 - 80)"
+                                    }
+                                }
+                            }
+                        },
+                        genderMale: {
+                            $cond: [
+                                {$eq: ["$patientDoc.gender", "M"]}, 1, 0
+                            ]
+                        },
+                        genderFemale: {
+                            $cond: [
+                                {$eq: ["$patientDoc.gender", "F"]}, 1, 0
+                            ]
+                        }
+                    }
+                },
                 {$unwind: {path: '$items', preserveNullAndEmptyArrays: true}},
                 {
                     $lookup: {
@@ -55,21 +94,82 @@ export const analysisPatientReport = new ValidatedMethod({
                         as: "itemDoc"
                     }
                 },
-                {$group: {_id: "$items.itemId", disease: {$last: "$itemDoc.name"}, number: {$sum: '$items.qty'},}},
+                {
+                    $group: {
+                        _id: "$items.itemId",
+                        disease: {$last: "$itemDoc.name"},
+                        data: {
+                            $addToSet: {
+                                patientId: "$patientDoc._id",
+                                ageStatus: "$ageStatus",
+                                male: "$genderMale",
+                                female: "$genderFemale"
+                            }
+                        }
+                    }
+                },
+                {$unwind: {path: '$data', preserveNullAndEmptyArrays: true}},
+                {
+                    $group: {
+                        _id: {
+                            ageStatus: "$data.ageStatus",
+                            _id: "$_id"
+                        },
+                        disease: {$last: "$disease"},
+                        male: {
+                            $sum: '$data.male'
+                        },
+                        female: {
+                            $sum: "$data.female"
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id._id",
+                        disease: {$last: "$disease"},
+                        data: {
+                            $addToSet: {
+                                patientId: "$patientDoc._id",
+                                ageStatus: "$_id.ageStatus",
+                                male: "$male",
+                                female: "$female"
+                            }
+                        }
+                    }
+                },
+                {
+                    $project:
+                    {
+                        _id: 1,
+                        disease: 1,
+                        data: 1,
+                        totalMale: { $sum: "$data.male" },
+                        totalFemale: { $sum: "$data.female" },
+
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        disease: 1,
+                        data: 1,
+                        totalMale: 1,
+                        totalFemale: 1,
+                        totalPeople: { $add: ["$totalMale", "$totalFemale"] }
+                    }
+                },
                 {
                     $group: {
                         _id: 0,
-                        total: {
-                            $sum: '$number'
-                        },
                         data: {
                             $addToSet: "$$ROOT"
                         },
 
                     },
-                }
+                },
+
             ])[0];
-            console.log(rptContent);
 
             return {rptTitle, rptHeader, rptContent};
         }
