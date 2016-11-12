@@ -22,6 +22,7 @@ tabularOpts.collection = Deposit;
 tabularOpts.columns = [
     {title: '<i class="fa fa-bars"></i>', tmpl: Meteor.isClient && Template.Dental_depositAction},
     {data: "_id", title: "ID"},
+    {data: "registerId", title: "Register Id"},
     {
         data: "paidDate",
         title: "Paid Date",
