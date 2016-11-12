@@ -237,6 +237,10 @@ Register.schema = new SimpleSchema({
         type: String,
         optional: true
     },
+    paymentCondition: {
+        type: String,
+        defaultValue: "partial"
+    },
     branchId: {
         type: String
     }

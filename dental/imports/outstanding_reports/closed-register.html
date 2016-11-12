@@ -1,9 +1,9 @@
 <!--Report-->
-<template name="Dental_activeRegisterReport">
+<template name="Dental_closedRegisterReport">
     <div class="box-body">
         {{#if subsReady}}
             <!--Form-->
-            {{#autoForm schema=schema id="Dental_activeRegisterReport" resetOnSuccess=false type="normal"}}
+            {{#autoForm schema=schema id="Dental_closedRegisterReport" resetOnSuccess=false type="normal"}}
                 <div class="row">
                     <div class="col-md-6">
                         {{> afQuickField name="branchId"}}
@@ -45,7 +45,7 @@
                                 <div class="rpt-title">
                                     <div class="rpt-title-3x rpt-kh-muol">{{khName}}</div>
                                     <div class="rpt-title-3x">{{enName}}</div>
-                                    <div class="rpt-title-2x"><u> Os Active Register Report</u></div>
+                                    <div class="rpt-title-2x"><u>Os Closed Register Report</u></div>
                                     <div>{{enAddress}}</div>
                                 </div>
                             {{/with}}
@@ -77,8 +77,10 @@
                                     <th>Patient</th>
                                     <th>Age</th>
                                     <th>Telephone</th>
+                                    <th>Closed Date</th>
                                     <th>Sub Total</th>
                                     <th>Deposit</th>
+                                    <th>Payment</th>
                                     <th>Total</th>
                                 </tr>
                                 </thead>
@@ -97,8 +99,10 @@
                                                 ({{type}}) {{number}}
                                             {{/each}}
                                         </td>
+                                        <td>{{moFormat closedDate "DD/MM/YYYY hh:mm:ss"}}</td>
                                         <td>{{numFormat subTotal "0,0.00"}}</td>
                                         <td>{{numFormat totalDeposit "0,0.00"}}</td>
+                                        <td>{{numFormat totalPayment "0,0.00"}}</td>
                                         <td>{{numFormat total "0,0.00"}}</td>
                                     </tr>
                                 {{/each}}
@@ -106,7 +110,7 @@
 
                                 <tfoot class="rpt-content-footer">
                                 <tr>
-                                    <td class="text-right" colspan="9">Grand Total:</td>
+                                    <td class="text-right" colspan="11">Grand Total:</td>
                                     <td class="text-right">{{numFormat rptContent.sumTotal "0,0.00"}}</td>
                                 </tr>
                                 </tfoot>

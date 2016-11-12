@@ -119,6 +119,23 @@ DentalRoutes.route('/active-register-report', {
     }
 });
 
+// Closed Register
+import '../imports/outstanding_reports/closed-register.js';
+DentalRoutes.route('/closed-register-report', {
+    name: 'dental.closedRegisterReport',
+    title: 'Closed Register Report',
+    action: function (params, queryParams) {
+        Layout.main('Dental_closedRegisterReport');
+    },
+    breadcrumb: {
+        //params: ['id'],
+        //queryParams: ['show', 'color'],
+        title: 'Closed Register Report',
+        // icon: 'users',
+        parent: 'dental.home'
+    }
+});
+
 // disease
 import '../imports/summary_reports/disease.js';
 DentalRoutes.route('/disease-report', {

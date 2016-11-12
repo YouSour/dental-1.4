@@ -11,8 +11,8 @@ import {Branch} from '../../../../core/common/collections/branch';
 import {Exchange} from '../../../../core/common/collections/exchange';
 import {Register} from '../../collections/register';
 
-export const activeRegisterReport = new ValidatedMethod({
-    name: 'dental.activeRegisterReport',
+export const closedRegisterReport = new ValidatedMethod({
+    name: 'dental.closedRegisterReport',
     mixins: [CallPromiseMixin],
     validate: null,
     run(params) {
@@ -42,23 +42,22 @@ export const activeRegisterReport = new ValidatedMethod({
             // --- Content ---
             let selector = {};
             selector.branchId = {$in: params.branchId};
-            selector.registerDate = {$lte: date};
-            selector.$or = [{
-                closedDate: {
-                    $not: {
-                        $lte: date
-                    }
-                }
-            }, {
-                closedDate: {
-                    $eq: ""
-                }
-            }];
+            selector.closedDate = {$lte: date};
+            selector.paymentCondition = {$eq: "partial"};
 
             rptContent = Register.aggregate([
                 {
                     $match: selector
                 },
+                {
+                    $lookup: {
+                        from: "dental_deposit",
+                        localField: "_id",
+                        foreignField: "registerId",
+                        as: "depositDoc"
+                    }
+                },
+                {$unwind: {path: "$depositDoc", preserveNullAndEmptyArrays: true}},
                 {
                     $lookup: {
                         from: "dental_patient",
@@ -71,22 +70,47 @@ export const activeRegisterReport = new ValidatedMethod({
                     $unwind: "$patientDoc"
                 },
                 {
-                    $lookup: {
-                        from: "dental_deposit",
-                        localField: "_id",
-                        foreignField: "registerId",
-                        as: "depositDoc"
+                    $project: {
+                        _id: 1,
+                        registerDate: 1,
+                        patientId: 1,
+                        patientDoc: 1,
+                        closedDate: 1,
+                        subTotal: 1,
+                        depositDoc: {$cond: [{$lte: ["$depositDoc.paidDate", date]}, "$depositDoc", 0]}
+                    }
+
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        registerDate: {$last: "$registerDate"},
+                        patientId: {$last: "$patientId"},
+                        patientDoc: {$last: "$patientDoc"},
+                        closedDate: {$last: "$closedDate"},
+                        subTotal: {$last: "$subTotal"},
+                        totalDeposit: {$sum: "$depositDoc.amount"},
                     }
                 },
-                {$unwind: {path: "$depositDoc", preserveNullAndEmptyArrays: true}},
+                {
+                    $lookup: {
+                        from: "dental_payment",
+                        localField: "_id",
+                        foreignField: "registerId",
+                        as: "paymentDoc"
+                    }
+                },
+                {$unwind: {path: "$paymentDoc", preserveNullAndEmptyArrays: true}},
                 {
                     $project: {
                         _id: 1,
                         registerDate: 1,
                         patientId: 1,
                         patientDoc: 1,
+                        closedDate: 1,
                         subTotal: 1,
-                        depositDoc: {$cond: [{$lte: ["$depositDoc.paidDate", date]}, "$depositDoc", 0]}
+                        totalDeposit: 1,
+                        paymentDoc: {$cond: [{$lte: ["$paymentDoc.paidDate", date]}, "$paymentDoc", 0]}
                     }
                 },
                 {
@@ -95,8 +119,10 @@ export const activeRegisterReport = new ValidatedMethod({
                         registerDate: {$last: "$registerDate"},
                         patientId: {$last: "$patientId"},
                         patientDoc: {$last: "$patientDoc"},
+                        closedDate: {$last: "$closedDate"},
                         subTotal: {$last: "$subTotal"},
-                        totalDeposit: {$sum: "$depositDoc.amount"}
+                        totalDeposit: {$last: "$totalDeposit"},
+                        totalPayment: {$sum: "$paymentDoc.amount"},
                     }
                 },
                 {
@@ -105,9 +131,25 @@ export const activeRegisterReport = new ValidatedMethod({
                         registerDate: 1,
                         patientId: 1,
                         patientDoc: 1,
+                        closedDate: 1,
                         subTotal: 1,
                         totalDeposit: 1,
-                        total: {$subtract: ["$subTotal", "$totalDeposit"]}
+                        totalPayment: 1,
+                        sumDepositWithPayment: {$add: ["$totalDeposit", "$totalPayment"]}
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        registerDate: 1,
+                        patientId: 1,
+                        patientDoc: 1,
+                        closedDate: 1,
+                        subTotal: 1,
+                        totalDeposit: 1,
+                        totalPayment: 1,
+                        sumDepositWithPayment: 1,
+                        total: {$subtract: ["$subTotal", "$sumDepositWithPayment"]}
                     }
                 },
                 {
