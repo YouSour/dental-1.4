@@ -102,6 +102,23 @@ DentalRoutes.route('/payment-report', {
     }
 });
 
+// Active Register
+import '../imports/outstanding_reports/active-register.js';
+DentalRoutes.route('/active-register-report', {
+    name: 'dental.activeRegisterReport',
+    title: 'Active Register Report',
+    action: function (params, queryParams) {
+        Layout.main('Dental_activeRegisterReport');
+    },
+    breadcrumb: {
+        //params: ['id'],
+        //queryParams: ['show', 'color'],
+        title: 'Active Register Report',
+        // icon: 'users',
+        parent: 'dental.home'
+    }
+});
+
 // disease
 import '../imports/summary_reports/disease.js';
 DentalRoutes.route('/disease-report', {
