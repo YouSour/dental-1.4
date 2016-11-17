@@ -85,6 +85,23 @@ DentalRoutes.route('/deposit-report', {
     }
 });
 
+// Active Register
+import '../imports/reports/shared-doctor.js';
+DentalRoutes.route('/shared-doctor-report', {
+    name: 'dental.sharedDoctorReport',
+    title: 'Shared Doctor Report',
+    action: function (params, queryParams) {
+        Layout.main('Dental_sharedDoctorReport');
+    },
+    breadcrumb: {
+        //params: ['id'],
+        //queryParams: ['show', 'color'],
+        title: 'Shared Doctor Report',
+        // icon: 'users',
+        parent: 'dental.home'
+    }
+});
+
 // Payment
 import '../imports/reports/payment.js';
 DentalRoutes.route('/payment-report', {

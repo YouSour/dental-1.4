@@ -69,7 +69,6 @@ export const diseaseReport = new ValidatedMethod({
                     },
                 }
             ])[0];
-            console.log(rptContent);
 
             return {rptTitle, rptHeader, rptContent};
         }

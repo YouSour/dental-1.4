@@ -139,9 +139,9 @@ indexTmpl.events({
     },
     'click .js-update' (event, instance) {
 
-        if (lastPayment(this._id)){
+        if (lastPayment(this._id, this.registerId)) {
             let dataUpdate = this;
-            alertify.payment(fa('pencil', 'Payment'), renderTemplate(editTmpl, dataUpdate));
+            alertify.payment(fa('pencil', 'Payment'), renderTemplate(editTmpl, dataUpdate)).maximize();
         } else {
             swal({
                 title: "Warning",
@@ -153,7 +153,7 @@ indexTmpl.events({
         }
     },
     'click .js-destroy' (event, instance) {
-        if (lastPayment(this._id)) {
+        if (lastPayment(this._id, this.registerId)) {
             destroyAction(
                 Payment,
                 {_id: this._id},
@@ -339,7 +339,6 @@ editTmpl.helpers({
     },
     data () {
         let currentData = Template.currentData();
-
         let data = {
             doc: currentData
         };
@@ -464,8 +463,8 @@ let hooksObject = {
 
 AutoForm.addHooks(['Dental_paymentForm', 'Dental_paymentEditForm'], hooksObject);
 
-function lastPayment(id) {
-    let lastPaymentDoc = Payment.findOne({}, {sort: {_id: -1}});
+function lastPayment(id, registerId) {
+    let lastPaymentDoc = Payment.findOne({registerId: registerId}, {sort: {_id: -1}});
     if (lastPaymentDoc._id == id) {
         return true;
     }
