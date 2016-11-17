@@ -130,7 +130,7 @@ indexTmpl.events({
         alertify.deposit(fa('plus', 'Deposit'), renderTemplate(formTmpl)).maximize();
     },
     'click .js-update' (event, instance) {
-        if (lastDeposit(this._id)) {
+        if (lastDeposit(this._id, this.registerId)) {
             let dataUpdate = this;
             alertify.deposit(fa('pencil', 'Deposit'), renderTemplate(editTmpl, dataUpdate));
         } else {
@@ -144,7 +144,7 @@ indexTmpl.events({
         }
     },
     'click .js-destroy' (event, instance) {
-        if (lastDeposit(this._id)) {
+        if (lastDeposit(this._id, this.registerId)) {
             destroyAction(
                 Deposit,
                 {_id: this._id},
@@ -463,8 +463,8 @@ let hooksObject = {
 
 AutoForm.addHooks(['Dental_depositForm', 'Dental_depositEditForm'], hooksObject);
 
-function lastDeposit(id) {
-    let lastDepositDoc = Deposit.findOne({}, {sort: {_id: -1}});
+function lastDeposit(id, registerId) {
+    let lastDepositDoc = Deposit.findOne({registerId: registerId}, {sort: {_id: -1}});
     if (lastDepositDoc._id == id) {
         return true;
     }

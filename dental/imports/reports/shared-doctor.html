@@ -1,0 +1,134 @@
+<!--Report-->
+<template name="Dental_sharedDoctorReport">
+    <div class="box-body">
+        {{#if subsReady}}
+            <!--Form-->
+            {{#autoForm schema=schema id="Dental_sharedDoctorReport" resetOnSuccess=false type="normal"}}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{> afQuickField name="branchId"}}
+                    </div>
+                    <div class="col-md-6">
+                        {{> afQuickField name="repDate"}}
+
+                        {{> reportFormFooterWithButton}}
+                    </div>
+                </div>
+
+            {{/autoForm}}
+        {{else}}
+            {{> loading}}
+        {{/if}}
+
+
+        <!--Report Paper-->
+        <div class="rpt rpt-portrait-a4">
+            {{#if data}}
+                {{#with data}}
+                    <!--Print Button-->
+                    <hr>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-success btn-print-area">
+                            <i class="fa fa-print"></i> Print
+                        </button>
+                    </div>
+                    <!--Print Button-->
+
+                    <!--Title-->
+                    <div id="print-data">
+                        <div class="rpt-title">
+                            <div class="rpt-title-3x rpt-kh-muol">{{title.company.khName}}</div>
+                            <div class="rpt-title-3x">{{title.company.enName}}</div>
+                            <div class="rpt-title-2x"><u>Deposit Report</u></div>
+                            <div>{{title.company.enAddress}}</div>
+                        </div>
+
+                        <!--Header-->
+                        <table width="100%" border="0">
+                            {{#each header}}
+                                <tr>
+                                    <td class="td-cus-style">{{{col1}}}</td>
+                                    <td class="td-cus-style">{{{col2}}}</td>
+                                </tr>
+                            {{/each}}
+                        </table>
+
+                        <!--Content-->
+
+                        <table class="rpt rpt-content">
+                            <thead class="report-content-header">
+                            <tr>
+                                <th>Register ID</th>
+                                <th>Register Date</th>
+                                <th>Patient</th>
+                                <th>Closed Date</th>
+                                <th>Invoice Amount</th>
+                                <th>Labo</th>
+                                <th>Invoice Share</th>
+                                <!-- <th>Sub Total</th> -->
+                                <th>Deposit</th>
+                                <!-- <th>Sub Discount</th> -->
+                                <!-- <th>Total</th> -->
+                                <th>Paid Amount</th>
+                                <th>Sum Of Shared</th>
+                                <th>Shared Amount</th>
+                            </tr>
+                            </thead>
+
+                            <tbody class="report-content-body">
+                            {{#each content}}
+                                {{#if isHeader }}
+                                    <tr>
+                                        <td colspan='11'><b>{{doctorId}}</b></td>
+                                    </tr>
+                                {{else}}
+                                    {{#if isFooter}}
+                                        <tr>
+                                            <td colspan='9' align="right"><b>Total</b></td>
+                                            <td><b>{{totalAmountBeforeDateFinal}}</b></td>
+                                            <td><b>{{totalAmount}}</b></td>
+                                        </tr>
+
+                                    {{else}}
+                                        <tr>
+                                            <td>{{registerId}}</td>
+                                            <td>{{moFormat date "DD/MM/YYYY"}}</td>
+                                            <td>{{patient}}</td>
+                                            <td>{{moFormat closedDate "DD/MM/YYYY HH:mm:ss"}}</td>
+                                            <td>{{invoiceAmount}}</td>
+                                            <td>{{laboExpense}}</td>
+                                            <td>{{invoiceShare}}</td>
+                                            <!-- <td>{{subTotal}}</td> -->
+                                            <td>{{deposit}}</td>
+                                            <!-- <td>{{subDiscount}}</td> -->
+                                            <!-- <td>{{totalDue}}</td> -->
+                                            <td>{{paidAmount}}</td>
+                                            <td>{{amountBeforeDate}}</td>
+                                            <td>{{amount}}</td>
+                                        </tr>
+                                    {{/if}}
+                                {{/if}}
+
+
+                            {{/each}}
+                            </tbody>
+                        </table>
+
+
+                        <!--Footer-->
+                        <p class="pull-right"><h5><b>Grand Total Labo : {{footer.grandTotalLaboUsd}} | Grand Total
+                        : {{footer.grandTotalUsd}}</b></h5></p>
+                    </div>
+                {{/with}}
+                <!--Sign-->
+            {{else}}
+                <div class="text-center">
+                    <!--{{> iconLoading size="fa-5x"}}-->
+                </div>
+            {{/if}}
+        </div>
+        <!--/Report Paper-->
+
+    </div>
+    <!-- /.box-body -->
+</template>
