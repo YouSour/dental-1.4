@@ -43,9 +43,7 @@ import {
 } from '../../common/methods/lookup-patient.js';
 
 // Collection
-import {
-    Register
-} from '../../common/collections/register.js';
+import {Register} from '../../common/collections/register.js';
 
 // Tabular
 import {
@@ -327,7 +325,6 @@ formTmpl.helpers({
     },
     checkMember() {
         let patient = patientDoc.get();
-
         let result = {
             class: 'gray',
             labelStatus: "warning",
