@@ -219,7 +219,7 @@ indexTmpl.events({
         let subDiscount = $('[name="subDiscount"]').val();
         $('[name="total"]').val(subTotal - subDiscount);
 
-        console.log (registerItemsCollection.find().count());
+        console.log(registerItemsCollection.find().count());
     }
 });
 
@@ -278,8 +278,11 @@ newTmpl.events({
             lookupDiseaseItems.callPromise({
                 itemId: itemId
             }).then((result)=> {
-                instance.price.set(result.price);
-
+                let member = $('.member').text().trim();
+                if (member == "No") {
+                    instance.price.set(result.price);
+                }
+                instance.price.set(result.memberPrice);
                 Meteor.setTimeout(()=> {
                     $.unblockUI();
                 }, 100);
@@ -464,9 +467,11 @@ editTmpl.events({
             lookupDiseaseItems.callPromise({
                 itemId: itemId
             }).then((result)=> {
-
-                instance.price.set(result.price);
-
+                let member = $('.member').text().trim();
+                if (member == "No") {
+                    instance.price.set(result.price);
+                }
+                instance.price.set(result.memberPrice);
                 Meteor.setTimeout(()=> {
                     $.unblockUI();
                 }, 100);
