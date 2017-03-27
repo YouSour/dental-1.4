@@ -266,6 +266,26 @@ formTmpl.helpers({
         if (FlowRouter.query.get('quickPayment') == 'new') {
             return true;
         }
+    },
+    disabledSubmitBtn (){
+        let amount = Session.get('amount');
+        let paidAmount = Session.get('paidAmount');
+
+        if (amount >= paidAmount) {
+            return {};
+        }
+
+        if (!_.isUndefined(amount)) {
+            swal({
+                title: "Warning",
+                type: "warning",
+                text: "Paid can\'t greater than Amount !",
+                timer: 1500,
+                showConfirmButton: false
+            });
+            return {disabled: true};
+
+        }
     }
 });
 
@@ -355,6 +375,26 @@ editTmpl.helpers({
     checkQuickPayment () {
         if (FlowRouter.query.get('quickPayment') == 'new') {
             return true;
+        }
+    },
+    disabledSubmitBtn (){
+        let amount = Session.get('amount');
+        let paidAmount = Session.get('paidAmount');
+
+        if (amount >= paidAmount) {
+            return {};
+        }
+
+        if (!_.isUndefined(amount)) {
+            swal({
+                title: "Warning",
+                type: "warning",
+                text: "Paid can\'t greater than Amount !",
+                timer: 1500,
+                showConfirmButton: false
+            });
+            return {disabled: true};
+
         }
     }
 });

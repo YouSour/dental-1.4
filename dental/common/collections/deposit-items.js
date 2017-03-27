@@ -34,6 +34,10 @@ export const DepositItemsSchema = new SimpleSchema({
             }
         }
     },
+    labo: {
+        type: String,
+        label: "Labo Id"
+    },
     laboAmount: {
         type: Number,
         label: "Labo Amount",
@@ -46,6 +50,10 @@ export const DepositItemsSchema = new SimpleSchema({
             }
         },
         optional: true
+    },
+    doctor: {
+        type: String,
+        label: "Doctor Id"
     },
     doctorAmount: {
         type: Number,
@@ -72,10 +80,30 @@ export const DepositItemsSchema = new SimpleSchema({
             }
         }
     },
-    balance:{
+    doctorPaid: {
+        type: Number,
+        decimal: true,
+        optional: true
+    },
+    doctorBalance: {
+        type: Number,
+        decimal: true,
+        optional: true
+    },
+    laboPaid: {
+        type: Number,
+        decimal: true,
+        optional: true
+    },
+    laboBalance: {
+        type: Number,
+        decimal: true,
+        optional: true
+    },
+    balance: {
         type: Number,
         label: "Balance",
         decimal: true,
-        min:0
+        min: 0
     }
 });

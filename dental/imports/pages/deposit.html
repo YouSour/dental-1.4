@@ -207,7 +207,12 @@
                     </div>
                 </div>
 
-                {{> formFooterWithButton}}
+                <div class="form-footer">
+                    <button type="submit" class="btn btn-primary save-deposit" {{disabledSubmitBtn}}><i class="fa fa-paper-plane-o"></i> {{_ "form.btnSubmit"}}
+                    </button>
+                    <button type="reset" class="btn btn-default"><i class="fa fa-refresh"></i> {{_ "form.btnReset"}}</button>
+                </div>
+
             {{/autoForm}}
         {{else}}
             {{> loading}}
@@ -305,7 +310,13 @@
                     </div>
                 </div>
 
-                {{> formFooterWithButton}}
+                <!--{{> formFooterWithButton}}-->
+                <div class="form-footer">
+                    <button type="submit" class="btn btn-primary" {{disabledSubmitBtn}}><i class="fa fa-paper-plane-o"></i> {{_ "form.btnSubmit"}}
+                    </button>
+                    <button type="reset" class="btn btn-default"><i class="fa fa-refresh"></i> {{_ "form.btnReset"}}</button>
+                </div>
+
             {{/autoForm}}
         {{else}}
             {{> loading}}

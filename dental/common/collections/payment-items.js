@@ -34,6 +34,10 @@ export const PaymentItemsSchema = new SimpleSchema({
             }
         }
     },
+    labo: {
+        type: String,
+        label: "Labo Id"
+    },
     laboAmount: {
         type: Number,
         label: "Labo Amount",
@@ -46,6 +50,10 @@ export const PaymentItemsSchema = new SimpleSchema({
             }
         },
         optional: true
+    },
+    doctor: {
+        type: String,
+        label: "Doctor Id"
     },
     doctorAmount: {
         type: Number,
@@ -71,6 +79,26 @@ export const PaymentItemsSchema = new SimpleSchema({
                 return inputmaskOptions.currency();
             }
         }
+    },
+    doctorPaid: {
+        type: Number,
+        decimal: true,
+        optional: true
+    },
+    doctorBalance: {
+        type: Number,
+        decimal: true,
+        optional: true
+    },
+    laboPaid: {
+        type: Number,
+        decimal: true,
+        optional: true
+    },
+    laboBalance: {
+        type: Number,
+        decimal: true,
+        optional: true
     },
     balance:{
         type: Number,

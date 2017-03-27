@@ -78,6 +78,7 @@ indexTmpl.helpers({
                 label: 'Amount',
                 fn (value, object, key) {
                     return value;
+                    // return numeral(value).format('$0,0.00');
                 }
             },
             {
@@ -86,6 +87,7 @@ indexTmpl.helpers({
                 fn (value, object, key) {
                     return value;
                     // return numeral(value).format('$0,0.00');
+
                 }
             },
             {
@@ -102,6 +104,34 @@ indexTmpl.helpers({
                 fn(value, object, key){
                     let val = _.isNull(value) ? 0 : value;
                     return Spacebars.SafeString(`<input type="text" value="${val}" class="paid">`);
+                }
+            },
+            {
+                key: 'doctorPaid',
+                label: 'Doctor Paid',
+                fn(value, object, key){
+                    return numeral(value).format('$0,0.00');
+                }
+            },
+            {
+                key: ' doctorBalance',
+                label: 'Doctor Balance',
+                fn(value, object, key){
+                    return numeral(object.doctorBalance).format('$0,0.00');
+                }
+            },
+            {
+                key: 'laboPaid',
+                label: 'Labo Paid',
+                fn(value, object, key){
+                    return numeral(value).format('$0,0.00');
+                }
+            },
+            {
+                key: 'laboBalance',
+                label: 'Labo Balance',
+                fn(value, object, key){
+                    return numeral(value).format('$0,0.00');
                 }
             },
             {
@@ -136,21 +166,26 @@ indexTmpl.helpers({
     //     return total;
     // }
 });
-indexTmpl.onDestroyed(function () {
-});
 indexTmpl.events({
-    'keyup .paidAmount'(event, instance){
+    'mousemove .table'(event, instace){
+        $('.paid').change();
+    },
+    'change .paid'(event, instance){
         let $parents = $(event.currentTarget).parents('tr');
         let itemId = $parents.find('.itemId').text();
         let amount = $parents.find('.amount').text();
+        let doctor = $parents.find('.doctor').text();
+        let doctorAmount = $parents.find('.doctorAmount').text();
+        let labo = $parents.find('.labo').text();
+        let laboAmount = $parents.find('.laboAmount').text();
         let paidAmount = $parents.find('.paid').val();
         amount = _.isEmpty(amount) ? 0 : parseFloat(amount);
         paidAmount = _.isEmpty(paidAmount) ? 0 : parseFloat(paidAmount);
-        let balance = amount - paidAmount;
-        if (balance < 0) {
-            balance = 0;
-        }
+        doctorAmount = _.isEmpty(doctorAmount) ? 0 : parseFloat(doctorAmount);
+        laboAmount = _.isEmpty(laboAmount) ? 0 : parseFloat(laboAmount);
 
+        Session.set('amount', amount);
+        Session.set('paidAmount', paidAmount);
 
         //set amount when keyup on paidAmount textbox
         let totalPaidAmount = 0;
@@ -161,10 +196,38 @@ indexTmpl.events({
 
         $('[name="amount"]').val(totalPaidAmount);
 
+        // doctor paid & labo paid
+        let tempPaid = 0, doctorPaid = 0, doctorBalance = 0, laboPaid = 0, laboBalance = 0;
+        if (paidAmount > doctorAmount) {
+            tempPaid = paidAmount - doctorAmount;
+            doctorPaid = doctorAmount;
+            laboPaid = tempPaid > laboAmount ? laboAmount : tempPaid;
+        } else {
+            doctorPaid = paidAmount;
+        }
+
+        doctorBalance = Math.abs(doctorPaid - doctorAmount);
+        laboBalance = Math.abs(laboPaid - laboAmount);
+
+        let balance = Math.abs(paidAmount - amount);
+        if (balance < 0) {
+            balance = 0;
+        }
+
+        totalBalance = 0;
+        depositItemsCollection.find().forEach(function (obj) {
+            totalBalance += obj.balance;
+        });
+        $('[name="totalBalance"]').val(totalBalance);
+
         depositItemsCollection.update(
             {itemId: itemId}, {
                 $set: {
                     paidAmount: paidAmount,
+                    doctorPaid: doctorPaid,
+                    doctorBalance: doctorBalance,
+                    laboPaid: laboPaid,
+                    laboBalance: laboBalance,
                     tempBalance: balance,
                     balance: balance,
                     status: balance > 0 ? "permission" : "ban"
@@ -172,10 +235,10 @@ indexTmpl.events({
             }
         );
 
-        totalBalance = 0;
-        depositItemsCollection.find().forEach(function (obj) {
-            totalBalance += obj.balance;
-        });
-        $('[name="totalBalance"]').val(totalBalance);
     }
+});
+
+indexTmpl.onDestroyed(function () {
+    Session.set('amount', null);
+    Session.set('paidAmount', null);
 });

@@ -79,10 +79,10 @@ Meteor.methods({
                 //   $gte: fromDate,
                 //   $lte: toDate
                 // };
-                selector.closedDate = {
-                    $gte: fromDate,
-                    $lte: toDate
-                };
+                // selector.closedDate = {
+                //     $gte: fromDate,
+                //     $lte: toDate
+                // };
                 selectorPayment.paidDate = {
                     $gte: fromDate,
                     $lte: toDate
