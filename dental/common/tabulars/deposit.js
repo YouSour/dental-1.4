@@ -31,7 +31,7 @@ tabularOpts.columns = [
         }
     },
     {data: 'items', title: 'Items', tmpl: Meteor.isClient && Template.Dental_depositItem},
-    {data: "amount", title: "Total Amount"},
+    {data: "amount", title: "Total Paid"},
     {data: "totalBalance", title: "Total Balance"},
 ];
 tabularOpts.extraFields = ['registerId','patientId'];

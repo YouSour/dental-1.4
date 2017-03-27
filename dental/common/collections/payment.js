@@ -27,6 +27,10 @@ Payment.itemsSchema = new SimpleSchema({
             }
         }
     },
+    labo: {
+        type: String,
+        label: "Labo Id"
+    },
     laboAmount: {
         type: Number,
         label: "Labo Amount",
@@ -39,6 +43,10 @@ Payment.itemsSchema = new SimpleSchema({
             }
         },
         optional: true
+    },
+    doctor: {
+        type: String,
+        label: "Doctor Id"
     },
     doctorAmount: {
         type: Number,
@@ -64,6 +72,26 @@ Payment.itemsSchema = new SimpleSchema({
                 return inputmaskOptions.currency();
             }
         },
+        optional: true
+    },
+    doctorPaid: {
+        type: Number,
+        decimal: true,
+        optional: true
+    },
+    doctorBalance: {
+        type: Number,
+        decimal: true,
+        optional: true
+    },
+    laboPaid: {
+        type: Number,
+        decimal: true,
+        optional: true
+    },
+    laboBalance: {
+        type: Number,
+        decimal: true,
         optional: true
     },
     tempBalance: {

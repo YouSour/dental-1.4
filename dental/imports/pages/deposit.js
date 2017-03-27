@@ -235,6 +235,8 @@ formTmpl.helpers({
                             item.amount = item.tempBalance;
                             item.paidAmount = item.amount;
                             item.balance = 0;
+                            item.labo = item.labo;
+                            item.doctor = item.doctor;
                         }
                         depositItemsCollection.insert(item);
                     } else if (!_.isUndefined(item.date)) {
@@ -262,6 +264,25 @@ formTmpl.helpers({
     checkQuickDeposit () {
         if (FlowRouter.query.get('quickDeposit') == 'new') {
             return true;
+        }
+    },
+    disabledSubmitBtn (){
+        let amount = Session.get('amount');
+        let paidAmount = Session.get('paidAmount');
+
+        if (amount >= paidAmount) {
+            return {};
+        }
+
+        if (!_.isUndefined(amount)) {
+            swal({
+                title: "Warning",
+                type: "warning",
+                text: "Paid can\'t greater than Amount !",
+                timer: 1500,
+                showConfirmButton: false
+            });
+            return {disabled: true};
         }
     }
 });
@@ -355,6 +376,26 @@ editTmpl.helpers({
     checkQuickDeposit () {
         if (FlowRouter.query.get('quickDeposit') == 'new') {
             return true;
+        }
+    },
+    disabledSubmitBtn (){
+        let amount = Session.get('amount');
+        let paidAmount = Session.get('paidAmount');
+
+        if (amount >= paidAmount) {
+            return {};
+        }
+
+        if (!_.isUndefined(amount)) {
+            swal({
+                title: "Warning",
+                type: "warning",
+                text: "Paid can\'t greater than Amount !",
+                timer: 1500,
+                showConfirmButton: false
+            });
+            return {disabled: true};
+
         }
     }
 });
